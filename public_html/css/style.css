@@ -7,9 +7,22 @@ and open the template in the editor.
     Created on : 15.03.2018, 16:05:31
     Author     : Worker
 */
+.flex-center-center{
+    display:flex;
+    justify-content: center;
+    align-items:center;
+}
+.flex-center-none{
+    display:flex;
+    justify-content: center;
+}
 header{
     min-height: 20vh;
     background-color: #009999;
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 footer{
     min-height: 20vh;
@@ -20,5 +33,27 @@ body{
 }
 #content{
     min-height: 60vh;
+}
+#header-logo{
+    font-size: 10vh;
+    color:#ffffff;
+    display:flex;
+    justify-content: flex-end;
+}
+#login-form{
+    margin-top:10vh;
+    font-size: 3vh;
+    padding:2vh 2vh 2vh 2vh;
+    border:2px solid #009999;
+    max-height: 30vh;
+    
+    display:flex;
+    flex-direction: column;
+}
+#user-login-header{
+    position:absolute;
+    right:10vw;
+    font-size:3vh;
+    color:#ffffff;
 }
 
