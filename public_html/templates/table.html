@@ -1,0 +1,8 @@
+<div class="table">
+    <table>
+        <tr><td ng-repeat="table_column in selectedtablecolumns">{{table_column.column_name}}</td></tr>
+        <tr ng-repeat="table_row in selectedtablecontent">
+            <td ng-repeat="value in table_row">{{value}}</td>
+        </tr>
+    </table>
+</div>

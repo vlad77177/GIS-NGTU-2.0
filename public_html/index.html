@@ -22,6 +22,18 @@ and open the template in the editor.
         </header>
         <div id="content" class="flex-center-none">
             <login-form ng-show="!isuserlog"></login-form>
+            <div ng-show="isuserlog" class="flex-center-center" style="flex-direction: column">
+                <div id="menu" class="flex-center-none">
+                    <div ng-click="changeMenuPage(1)">Просмотр данных</div>
+                    <div ng-click="changeMenuPage(2)">Управление пользователями</div>
+                    <div ng-click="changeMenuPage(3)">Выполнение запросов</div>
+                </div>
+
+                <div id="tables-content" ng-show="openedmenupage===1">
+                    <table-menu></table-menu>
+                    <table-content></table-content>                   
+                </div>
+            </div>
         </div>
         <footer></footer>
     </body>
