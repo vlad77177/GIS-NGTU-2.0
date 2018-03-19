@@ -5,7 +5,8 @@
  */
 App.controller('AppController',['$scope','$http',
     function AppController($scope,$http){
-        $scope.tablenames=null;
+        
+        $scope.tablenames=false;
         $scope.openedmenupage=1;
         $scope.isuserlog=false;
         $scope.test='test';
@@ -13,9 +14,17 @@ App.controller('AppController',['$scope','$http',
         $scope.getTableNames=function(){
             $http({method:'POST',data:$scope.user,url:'php/gettablenames.php'})
                         .success(function(data){
-                            $scope.tablenames=data;
+                            console.log(data);
+                            if(Array.isArray(data)){
+                                console.log('массив');
+                                $scope.tablenames=data;
+                            }
+                            else{
+                                $scope.tablenames=false;
+                            }
                         })
                         .error(function(status){
+                            console.log('error');
                             console.log(JSON.stringify(status));
             });
         };
@@ -23,13 +32,16 @@ App.controller('AppController',['$scope','$http',
         $scope.getTableColumns=function(table_name){
             var data={
                 user:null,
-                table_name:null
+                tablename:null
             };
             data.user=$scope.user;
-            data.table_name=table_name;
+            data.tablename=table_name;
             $http({method:'POST',data:data,url:'php/gettablecolumns.php'})
                         .success(function(data){
-                            $scope.selectedtablecolumns=data;
+                            if(data!==false)
+                                $scope.selectedtablecolumns=data;
+                            else
+                                $scope.selectedtablecolumns=undefined;
                         })
                         .error(function(status){
                             console.log(JSON.stringify(status));
@@ -39,13 +51,13 @@ App.controller('AppController',['$scope','$http',
         $scope.getTableContent=function(table_name){
             var data={
                 user:null,
-                table_name:null
+                tablename:null
             };
             data.user=$scope.user;
-            data.table_name=table_name;
+            data.tablename=table_name;
             $http({method:'POST',data:data,url:'php/gettablecontent.php'})
                         .success(function(data){
-                            if(data!=="false"){
+                            if(Array.isArray(data)){
                                 $scope.selectedtablecontent=data;
                             }
                             else{
@@ -67,8 +79,10 @@ App.controller('AppController',['$scope','$http',
             switch(page){
                 case 1:{
                         $scope.getTableNames();
-                        if($scope.tablenames!==null)
+                        if($scope.tablenames!==false){
+                            console.log('загружаю column_name');
                             $scope.getTableColumns($scope.tablenames[0]);
+                        }
                         break;
                 }
                 case 2:{

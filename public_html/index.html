@@ -29,10 +29,12 @@ and open the template in the editor.
                     <div ng-click="changeMenuPage(3)">Выполнение запросов</div>
                 </div>
 
-                <div id="tables-content" ng-show="openedmenupage===1">
+                <div id="tables-content" ng-show="openedmenupage==1">
                     <table-menu></table-menu>
                     <table-content></table-content>                   
                 </div>
+                {{selectedtablecolumns}}
+                {{selectedtablecontent}}
             </div>
         </div>
         <footer></footer>
