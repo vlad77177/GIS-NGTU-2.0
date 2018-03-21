@@ -1,0 +1,43 @@
+<div id="user-settings">
+    <img ng-src="images/user.png" ng-show="current_user.rolcanlogin=='t'">
+    <img ng-src="images/group.png" ng-show="current_user.rolcanlogin=='f'">
+    <table>
+        <tr>
+            <td>Имя:</td>
+            <td ng-bind="current_user.rolname"></td>
+        </tr>
+        <tr>
+            <td>Суперпользователь:</td>
+            <td ng-bind="current_user.rolsuper | userSetting"></td>
+        </tr>
+        <tr>
+            <td>Наследует права:</td>
+            <td ng-bind="current_user.rolinherit | userSetting"></td>
+        </tr>
+        <tr>
+            <td>Создает роли:</td>
+            <td ng-bind="current_user.rolcreaterole | userSetting"></td>
+        </tr>
+        <tr>
+            <td>Создает базы данных:</td>
+            <td ng-bind="current_user.rolcreatedb | userSetting"></td>
+        </tr>
+        <tr>
+            <td>Может подключаться к серверу:</td>
+            <td ng-bind="current_user.rolcanlogin | userSetting"></td>
+        </tr>
+        <tr>
+            <td>Может запускать потоковую репликацию:</td>
+            <td ng-bind="current_user.rolreplication | userSetting"></td>
+        </tr>
+        <tr>
+            <td>Число одновременных подключений:</td>
+            <td ng-bind="current_user.rolconnlimit | userSettingConnections"></td>
+        </tr>
+        <!--
+        <tr>
+            <td>Не подчиняется политике защиты строк:</td>
+            <td>???</td>
+        </tr>-->
+    </table>
+</div>

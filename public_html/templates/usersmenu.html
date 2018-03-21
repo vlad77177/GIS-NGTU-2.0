@@ -1,6 +1,6 @@
 <div id="users-menu">
     <div id="users-head">Пользователи:</div>
-    <div class="user-list-names" ng-repeat="user in users | users">{{user.rolname}}</div>
+    <div class="user-list-names" ng-repeat="user in users | users" ng-click="showUserSettings(user)">{{user.rolname}}</div>
     <div id="groups-head">Группы:</div>
-    <div class="group-list-names" ng-repeat="group in users | groups">{{group.rolname}}</div>
+    <div class="group-list-names" ng-repeat="group in users | groups" ng-click="showUserSettings(group)">{{group.rolname}}</div>
 </div>

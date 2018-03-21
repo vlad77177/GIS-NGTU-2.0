@@ -1,7 +1,13 @@
 {
     "elements": {
-        "users-menu": {},
+        "users-menu": {
+            "attributes": {
+                "ng-show": {}
+            }
+        },
         "table-content": {},
+        "user-privileges": {},
+        "user-settings": {},
         "table-menu": {}
     },
     "attributes": {}

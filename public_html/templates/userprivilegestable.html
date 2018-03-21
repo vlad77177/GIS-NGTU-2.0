@@ -1,0 +1,42 @@
+<div id="user-privileges">
+    
+    <table>
+        
+        <tr>
+            <td></td>
+            <td>SELECT</td>
+            <td>UPDATE</td>
+            <td>INSERT</td>
+            <td>DELETE</td>
+            
+        <tr ng-repeat="ts in tablesettings">
+            <td ng-bind="ts.relname"></td>
+            <td>
+                <select>
+                    <option>Запрещен</option>
+                    <option ng-selected="ts.relacl | relaclUserFind:current_user.rolname:'r'">Разрешен</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option>Запрещен</option>
+                    <option ng-selected="ts.relacl | relaclUserFind:current_user.rolname:'w'">Разрешен</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option>Запрещен</option>
+                    <option ng-selected="ts.relacl | relaclUserFind:current_user.rolname:'a'">Разрешен</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option>Запрещен</option>
+                    <option ng-selected="ts.relacl | relaclUserFind:current_user.rolname:'d'">Разрешен</option>
+                </select>
+            </td>
+        </tr>
+        
+    </table>
+    
+</div>

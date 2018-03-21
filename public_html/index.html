@@ -38,8 +38,13 @@ and open the template in the editor.
                 
                 <div id="users-content" ng-show="openedmenupage==2">
                     <users-menu></users-menu>
-                    {{tablesettings}}
+                    <!--{{tablesettings}}-->
+                    <div id="user-content-right">
+                        <user-settings ng-show="current_user!=undefined"></user-settings>
+                        <user-privileges ng-show="current_user!=undefined && current_user.rolsuper!='t'"></user-privileges>
+                    </div>
                 </div>
+                {{tablesettings}}
             </div>
         </div>
         <footer></footer>

@@ -143,6 +143,10 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder',
             });
         };
         
+        $scope.showUserSettings=function(user){
+            $scope.current_user=user;
+        };
+        
         $scope.logOut=function(){
             $http({method:'POST',url:'php/logout.php'})
                         .success(function(){

@@ -26,5 +26,19 @@ App.directive('usersMenu',function(){
         replace:true
     };
 });
+App.directive('userPrivileges',function(){
+    return{
+        restrict:'E',
+        templateUrl:'templates/userprivilegestable.html',
+        replace:true
+    };
+});
+App.directive('userSettings',function(){
+    return{
+        restrict:'E',
+        templateUrl:'templates/usersettings.html',
+        replace:true
+    };
+});
 
 
