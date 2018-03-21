@@ -19,5 +19,12 @@ App.directive('tableContent',function(){
         replace:true
     };
 });
+App.directive('usersMenu',function(){
+    return{
+        restrict:'E',
+        templateUrl:'templates/usersmenu.html',
+        replace:true
+    };
+});
 
 

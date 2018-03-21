@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-App.controller('AppController',['$scope','$http',
-    function AppController($scope,$http){
-        
+App.controller('AppController',['$scope','$http','tableSettingsDecoder',
+    function AppController($scope,$http,tableSettingsDecoder){
+      
         $scope.tablenames=false;
         $scope.openedmenupage=1;
         $scope.isuserlog=false;
@@ -69,7 +69,37 @@ App.controller('AppController',['$scope','$http',
             });
         };
         
+        $scope.getUsers=function(){
+            $http({method:'POST',data:$scope.user,url:'php/getuserssettings.php'})
+                        .success(function(data){
+                            console.log(data);
+                            if(Array.isArray(data)){
+                                $scope.users=data;
+                            }
+                            else{
+                                $scope.users=undefined;
+                            }
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
+        $scope.getTableSettings=function(){
+            $http({method:'POST',data:$scope.user,url:'php/gettablessettings.php'})
+                        .success(function(data){
+                            console.log(data);
+                            $scope.tablesettings=tableSettingsDecoder.decode(data);
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        }
+        
         $scope.getTable=function(table_name){
+            $scope.selectedtablename=table_name;
+            $scope.selectedtablecolumns=undefined;
+            $scope.selectedtablecontent=undefined;
             $scope.getTableColumns(table_name);
             $scope.getTableContent(table_name);
         };
@@ -86,6 +116,7 @@ App.controller('AppController',['$scope','$http',
                         break;
                 }
                 case 2:{
+                        $scope.getUsers();
                         break;
                 }
                 case 3:{
@@ -104,6 +135,7 @@ App.controller('AppController',['$scope','$http',
                                 $scope.user=data;
                                 $scope.isuserlog=true;
                                 $scope.changeMenuPage(1);
+                                $scope.getTableSettings();
                             }
                         })
                         .error(function(status){

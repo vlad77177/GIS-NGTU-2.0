@@ -48,7 +48,8 @@ body{
     padding:2vh 2vh 2vh 2vh;
     border:2px solid #009999;
     max-height: 30vh;
-    
+    width:30vw;
+    margin-left: 35vw;
     display:flex;
     flex-direction: column;
 }
@@ -72,28 +73,28 @@ body{
     padding: 0.5vw;
     cursor: pointer;
 }
-#table-menu{
+#table-menu,#users-menu{
     position: relative;
     width:20vw;
     border-right: 1px solid #009999;
     top:-7.2vh;
 }
-#table-head{
+#table-head,#users-head,#groups-head{
     font-size: 2vw;
     color:#ffffff;
     background-color: #009999;
     height:7vh;
     text-align: center;
 }
-.table-list-names{
+.table-list-names,.user-list-names,.group-list-names{
     font-size: 1.5vw;
     color:#009999;
     margin-left: 2vw;
     cursor: pointer;
-    border-bottom: 1px solid black;
+    /*border-bottom: 1px solid black;*/
     min-height: 5vh;
 }
-#tables-content{
+#tables-content,#users-content{
     display:flex;
     justify-content: flex-start;
     width: 100%;
