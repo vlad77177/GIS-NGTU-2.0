@@ -93,4 +93,99 @@ App.factory('tableSettingsDecoder',function(){
     };
 });
 
+App.factory('getTablePrivilegesModel',function(){
+    return{
+        get:function(ts,username){
+            var model={
+                table:null,
+                select:null,
+                update:null,
+                insert:null,
+                delete:null
+            };
+            var option=[
+                {
+                    value:false,
+                    desc:'Запрещено'
+                },
+                {
+                    value:true,
+                    desc:'Разрешено'
+                }
+            ];
+            var select=['Разрешен','Запрещен'];
+            var models=[];
+            console.log(ts.length);//ok
+            for(var i=0;i<ts.length;i++){
+                models[i]=JSON.parse(JSON.stringify(model));
+                models[i].table=ts[i].relname;
+                if(ts[i].relacl==null){
+                    models[i].select={
+                        now:false,
+                        select:option
+                    };
+                    models[i].update={
+                        now:false,
+                        select:option
+                    };
+                    models[i].insert={
+                        now:false,
+                        select:option
+                    };
+                    models[i].delete={
+                        now:false,
+                        select:option
+                    };
+                }
+                else{
+                    var settings=null;
+                    for(var j=0;j<ts[i].relacl.length;j++){
+                        if(ts[i].relacl[j].name==username){
+                            settings=JSON.parse(JSON.stringify(ts[i].relacl[j]));
+                            break;
+                        }
+                    }
+                    if(settings==null){
+                        models[i].select={
+                            now:false,
+                            select:option
+                        };
+                        models[i].update={
+                            now:false,
+                            select:option
+                        };
+                        models[i].insert={
+                            now:false,
+                            select:option
+                        };
+                        models[i].delete={
+                            now:false,
+                            select:option
+                        };
+                    }
+                    else{
+                        models[i].select={
+                            now:settings.select_r,
+                            select:option
+                        };
+                        models[i].update={
+                            now:settings.update_w,
+                            select:option
+                        };
+                        models[i].insert={
+                            now:settings.insert_a,
+                            select:option
+                        };
+                        models[i].delete={
+                            now:settings.delete_d,
+                            select:option
+                        };
+                    }
+                }
+            }
+            return models;
+        }
+    };
+});
+
 

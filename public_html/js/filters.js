@@ -83,49 +83,13 @@ App.filter('relaclUserFind',function(){
         }
     };
 });
-/*
-App.filter('relaclFindUser',function(){
-    return function(input,username,mode){
-        if(input==null){
-            return 'f';
-        }
-        else{
-            var index=Array.find(input.name,username);
-            if(index!=-1){
-                switch(mode){
-                    case 'r':{
-                            if(input[index].select_r==true)
-                               return 't';
-                            else
-                                return 'f';
-                            break;
-                    }
-                    case 'w':{
-                            if(input[index].update_w==true)
-                               return 't';
-                            else
-                                return 'f';
-                            break;
-                    }
-                    case 'a':{
-                            if(input[index].insert_a==true)
-                               return 't';
-                            else
-                                return 'f';
-                            break;
-                    }
-                    case 'd':{
-                            if(input[index].delete_d==true)
-                               return 't';
-                            else
-                                return 'f';
-                            break;
-                    }
-                }
+App.filter('findUserSettings',function(){
+    return function(input,users){
+        for(var i=0;i<users.length;i++){
+            if(input.login==users[i].rolname){
+                return users[i];
             }
-            else
-                return 'f';
         }
-    }
-});*/
+    };
+});
 

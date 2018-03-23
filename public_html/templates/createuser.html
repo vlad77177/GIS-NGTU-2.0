@@ -1,0 +1,52 @@
+<div id="create-user-form">
+    <div id="create-user-label">Новый пользователь:</div>
+    <div id="create-user-name-pass">
+        <label for="name">Имя:</label><input id="name" type="text" ng-model="newuser.name">
+        <label for="password">Пароль:</label><input id="password" type="password" ng-model="newuser.password"> 
+        <label for="rpassword">Повторите пароль:</label><input id="rpassword" type="password" ng-model="newuser.rpassword">
+    </div>
+    <div id="create-user-settings">
+        <table>
+            <tr>
+                <td>
+                    <label for="issuper">Суперпользователь</label>
+                </td>
+                <td>
+                    <input id="issuper" type="checkbox" ng-model="newuser.is_super">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="islogin">Может авторизироваться</label>
+                </td>
+                <td>
+                    <input id="islogin" type="checkbox" ng-model="newuser.is_login">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="isinherit">Наследует права</label>
+                </td>
+                <td>
+                    <input id="isinherit" type="checkbox" ng-model="newuser.is_inherit">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="iscreatedb">Создает базы данных</label>
+                </td>
+                <td>
+                    <input id="iscreatedb" type="checkbox" ng-model="newuser.is_createdb">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="iscreaterole">Создает роли</label>
+                </td>
+                <td>
+                    <input id="iscreaterole" type="checkbox" ng-model="newuser.is_createrole">
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

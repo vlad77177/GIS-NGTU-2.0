@@ -40,5 +40,12 @@ App.directive('userSettings',function(){
         replace:true
     };
 });
+App.directive('createUser',function(){
+    return{
+       restrict:'E',
+       templateUrl:'templates/createuser.html',
+       replace:true
+    };
+});
 
 

@@ -6,9 +6,12 @@
             }
         },
         "table-content": {},
+        "create-user": {},
         "user-privileges": {},
         "user-settings": {},
         "table-menu": {}
     },
-    "attributes": {}
+    "attributes": {
+        "ng-show": {}
+    }
 }

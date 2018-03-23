@@ -3,8 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-App.controller('AppController',['$scope','$http','tableSettingsDecoder',
-    function AppController($scope,$http,tableSettingsDecoder){
+App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTablePrivilegesModel',
+    function AppController($scope,$http,tableSettingsDecoder,getTablePrivilegesModel){
       
         $scope.tablenames=false;
         $scope.openedmenupage=1;
@@ -145,6 +145,17 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder',
         
         $scope.showUserSettings=function(user){
             $scope.current_user=user;
+            $scope.tableprivilegesmodel=getTablePrivilegesModel.get($scope.tablesettings,user.rolname);
+        };
+        
+        $scope.getTdPrivilegesClass=function(model,oldmodel){
+            if(model!=oldmodel){
+                return 'td-changed';
+            }
+            else if(model){
+                return 'td-enabled';
+            }
+            return 'td-disabled';
         };
         
         $scope.logOut=function(){

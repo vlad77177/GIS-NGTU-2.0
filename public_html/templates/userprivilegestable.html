@@ -11,28 +11,20 @@
             
         <tr ng-repeat="ts in tablesettings">
             <td ng-bind="ts.relname"></td>
-            <td>
-                <select>
-                    <option>Запрещен</option>
-                    <option ng-selected="ts.relacl | relaclUserFind:current_user.rolname:'r'">Разрешен</option>
+            <td ng-class="getTdPrivilegesClass(tableprivilegesmodel[$index].select.now,(ts.relacl | relaclUserFind:current_user.rolname:'r'))">
+                <select ng-model="tableprivilegesmodel[$index].select.now" ng-options="op.value as op.desc for op in tableprivilegesmodel[$index].select.select">
                 </select>
             </td>
-            <td>
-                <select>
-                    <option>Запрещен</option>
-                    <option ng-selected="ts.relacl | relaclUserFind:current_user.rolname:'w'">Разрешен</option>
+            <td ng-class="getTdPrivilegesClass(tableprivilegesmodel[$index].update.now,(ts.relacl | relaclUserFind:current_user.rolname:'w'))">
+                <select ng-model="tableprivilegesmodel[$index].update.now" ng-options="op.value as op.desc for op in tableprivilegesmodel[$index].update.select">
                 </select>
             </td>
-            <td>
-                <select>
-                    <option>Запрещен</option>
-                    <option ng-selected="ts.relacl | relaclUserFind:current_user.rolname:'a'">Разрешен</option>
+            <td ng-class="getTdPrivilegesClass(tableprivilegesmodel[$index].insert.now,(ts.relacl | relaclUserFind:current_user.rolname:'a'))">
+                <select ng-model="tableprivilegesmodel[$index].insert.now" ng-options="op.value as op.desc for op in tableprivilegesmodel[$index].insert.select">
                 </select>
             </td>
-            <td>
-                <select>
-                    <option>Запрещен</option>
-                    <option ng-selected="ts.relacl | relaclUserFind:current_user.rolname:'d'">Разрешен</option>
+            <td ng-class="getTdPrivilegesClass(tableprivilegesmodel[$index].delete.now,(ts.relacl | relaclUserFind:current_user.rolname:'d'))">
+                <select ng-model="tableprivilegesmodel[$index].delete.now" ng-options="op.value as op.desc for op in tableprivilegesmodel[$index].delete.select">
                 </select>
             </td>
         </tr>
