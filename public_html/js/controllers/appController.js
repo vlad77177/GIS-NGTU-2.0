@@ -3,13 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTablePrivilegesModel',
-    function AppController($scope,$http,tableSettingsDecoder,getTablePrivilegesModel){
+App.controller('AppController',['$scope',
+    '$http',
+    'tableSettingsDecoder',
+    'getTablePrivilegesModel',
+    'newRowModelFactory',
+    'getSQLString',
+    'getUserMembersModel',
+    function AppController($scope,
+            $http,
+            tableSettingsDecoder,
+            getTablePrivilegesModel,
+            newRowModelFactory,
+            getSQLString,
+            getUserMembersModel
+        ){
       
         $scope.tablenames=false;
         $scope.openedmenupage=1;
         $scope.isuserlog=false;
-        $scope.test='test';
+        $scope.alreadycheck=false;
+        $scope.newrow=[];
         
         $scope.getTableNames=function(){
             $http({method:'POST',data:$scope.user,url:'php/gettablenames.php'})
@@ -38,10 +52,14 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTabl
             data.tablename=table_name;
             $http({method:'POST',data:data,url:'php/gettablecolumns.php'})
                         .success(function(data){
-                            if(data!==false)
+                            if(data!==false){
+                                console.log(data);
                                 $scope.selectedtablecolumns=data;
-                            else
+                                $scope.newrow=newRowModelFactory.get($scope.selectedtablecolumns);
+                            }
+                            else{
                                 $scope.selectedtablecolumns=undefined;
+                            }
                         })
                         .error(function(status){
                             console.log(JSON.stringify(status));
@@ -85,6 +103,17 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTabl
             });
         };
         
+        $scope.getUserMembers=function(){
+            $http({method:'POST',data:$scope.user,url:'php/getusermembers.php'})
+                        .success(function(data){
+                            console.log(data);
+                            $scope.usermembers=data;
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
         $scope.getTableSettings=function(){
             $http({method:'POST',data:$scope.user,url:'php/gettablessettings.php'})
                         .success(function(data){
@@ -94,7 +123,7 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTabl
                         .error(function(status){
                             console.log(JSON.stringify(status));
             });
-        }
+        };
         
         $scope.getTable=function(table_name){
             $scope.selectedtablename=table_name;
@@ -117,6 +146,7 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTabl
                 }
                 case 2:{
                         $scope.getUsers();
+                        $scope.getUserMembers();
                         break;
                 }
                 case 3:{
@@ -134,8 +164,13 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTabl
                                 console.log("Пользователь найден");
                                 $scope.user=data;
                                 $scope.isuserlog=true;
+                                $scope.alreadycheck=true;
                                 $scope.changeMenuPage(1);
                                 $scope.getTableSettings();
+                            }
+                            else{
+                                $scope.isuserlog=false;
+                                $scope.alreadycheck=true;
                             }
                         })
                         .error(function(status){
@@ -146,6 +181,10 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTabl
         $scope.showUserSettings=function(user){
             $scope.current_user=user;
             $scope.tableprivilegesmodel=getTablePrivilegesModel.get($scope.tablesettings,user.rolname);
+            $scope.usermembersmodel=getUserMembersModel.get($scope.current_user,
+                $scope.users,
+                $scope.usermembers
+            );
         };
         
         $scope.getTdPrivilegesClass=function(model,oldmodel){
@@ -180,6 +219,55 @@ App.controller('AppController',['$scope','$http','tableSettingsDecoder','getTabl
                             console.log(JSON.stringify(status));
             });
         };
+        
+        $scope.getUserInheritValueClass=function(element){
+            if(element.inherit!=element.default){
+                return 'user-inherit-value-new';
+            }
+            else{
+                if(element.selected==true){
+                    return 'user-inherit-value-selected';
+                }
+                else{
+                    return 'user-inherit-value';
+                }
+            }
+        };
+        
+        $scope.newInherit=function(){
+            for(var i=0;i<$scope.usermembersmodel.length;i++){
+                if($scope.usermembersmodel[i].selected==true && $scope.usermembersmodel[i].inherit==false){
+                    $scope.usermembersmodel[i].inherit=true;
+                    $scope.usermembersmodel[i].selected=false;
+                }
+            }
+        };
+        
+        $scope.newNoInherit=function(){
+            for(var i=0;i<$scope.usermembersmodel.length;i++){
+                if($scope.usermembersmodel[i].selected==true && $scope.usermembersmodel[i].inherit==true){
+                    $scope.usermembersmodel[i].inherit=false;
+                    $scope.usermembersmodel[i].selected=false;
+                }
+            }
+        };
+        
+        $scope.addRow=function(){
+            var string=getSQLString.getInsertString($scope.newrow,$scope.selectedtablename,$scope.selectedtablecolumns);
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $http({method:'POST',data:data,url:'php/addrow.php'})
+                        .success(function(data){
+                            $scope.getTableContent($scope.selectedtablename);
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
     }
 ]);
 

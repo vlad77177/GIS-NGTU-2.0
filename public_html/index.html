@@ -20,11 +20,11 @@ and open the template in the editor.
     <body ng-controller="AppController">
         <header>
             <div id="header-logo">GIS NGTU 2.0</div>
-            <div id="user-login-header" ng-show="isuserlog">Вы вошли как: {{user.login}}<button ng-click="logOut()">Выйти</button></div>
+            <div id="user-login-header" ng-show="isuserlog && alreadycheck">Вы вошли как: {{user.login}}<button ng-click="logOut()">Выйти</button></div>
         </header>
         <div id="content" class="flex-center-none">
-            <login-form ng-show="!isuserlog" ng-hide="user"></login-form>
-            <div ng-show="isuserlog" class="flex-center-center" style="flex-direction: column">
+            <login-form ng-show="!isuserlog && alreadycheck"></login-form>
+            <div ng-show="isuserlog && alreadycheck" class="flex-center-center" style="flex-direction: column">
                 <div id="menu" class="flex-center-none">
                     <div ng-click="changeMenuPage(1)">Просмотр данных</div>
                     <div ng-click="changeMenuPage(2)">Управление пользователями</div>
@@ -33,7 +33,10 @@ and open the template in the editor.
 
                 <div id="tables-content" ng-show="openedmenupage==1">
                     <table-menu></table-menu>
-                    <table-content></table-content>                   
+                    <div id="table-content-right">
+                        <table-content></table-content>
+                        <add-row></add-row>
+                    </div>
                 </div>
                 
                 <div id="users-content" ng-show="openedmenupage==2">
@@ -41,6 +44,7 @@ and open the template in the editor.
                     <div id="user-content-right">
                         <user-settings ng-show="current_user!=undefined"></user-settings>
                         <user-privileges ng-show="current_user!=undefined && current_user.rolsuper!='t'"></user-privileges>
+                        <user-inherit ng-show="current_user!=undefined"></user-inherit>
                         <hr>
                         <create-user ng-show="(user | findUserSettings:users).rolcreaterole=='t'"></create-user>
                     </div>

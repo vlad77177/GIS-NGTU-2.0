@@ -47,5 +47,19 @@ App.directive('createUser',function(){
        replace:true
     };
 });
+App.directive('addRow',function(){
+    return{
+        restrict:'E',
+        templateUrl:'templates/addrow.html',
+        replace:true
+    };
+});
+App.directive('userInherit',function(){
+    return{
+        restrict:'E',
+        templateUrl:'templates/userinherit.html',
+        replace:true
+    };
+});
 
 

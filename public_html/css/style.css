@@ -53,6 +53,9 @@ body{
     display:flex;
     flex-direction: column;
 }
+#login-form table tr td{
+    border:none;
+}
 #user-login-header{
     position:absolute;
     right:10vw;
@@ -99,8 +102,14 @@ body{
     justify-content: flex-start;
     width: 100%;
 }
-#user-content-right{
+.table div:first-child{
+    font-size: 1.5vw;
+    color:#009999;
+    margin-bottom:2vh;
+}
+#user-content-right,#table-content-right{
     width:100%;
+    max-width: 80vw;
     padding:2vw;
     display:flex;
     flex-direction: column;
@@ -141,15 +150,15 @@ table td{
     padding: 3px 3px 3px 3px;
 }
 .td-changed{
-    background-color:#ffffcc;
+    background-color:#ffff00;
 }
 .td-default{
 }
 .td-enabled{
-    background-color:#ccffcc;
+    background-color:#009999;
 }
 .td-disabled{
-    background-color: #ffcccc;
+    background-color: #ff6666;
 }
 
 #create-user-form{
@@ -170,11 +179,50 @@ table td{
     flex-direction: column;
     margin-top:3vh;
 }
-#create-user-settings table tr td{
+#create-user-settings table tr td,#add-row-form table tr td{
     border:none;
 }
 #create-user-settings table{
     max-width: 30%;
+}
+#add-row-form{
+    max-width: 80vw;
+    margin-top: 2vw;
+    border-top:2px solid #009999;
+}
+
+#user-inherit-form{
+    width:100%;
+    margin-top: 2vw;
+    display:flex;
+    flex-direction:row;
+    align-items: center;
+}
+#user-noinherit-left,#user-inherit-right{
+    width:100%;
+    min-height: 20vh;
+    border:2px solid #009999;
+}
+#user-inherit-buttons{
+    display:flex;
+    flex-direction: column;
+}
+.user-inherit-label{
+    font-size: 1.5vw;
+    border-bottom: 1px solid #009999;
+    color:#009999;
+}
+.user-inherit-value,.user-inherit-value-selected,.user-inherit-value-new{
+    margin:3px 0px 3px 1vw;
+    cursor:pointer;
+    width:auto;
+}
+.user-inherit-value-selected{
+    background-color: #009999;
+    color:#ffffff;
+}
+.user-inherit-value-new{
+    background-color: #ffff00;
 }
 
 

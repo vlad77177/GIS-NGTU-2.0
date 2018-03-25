@@ -1,0 +1,10 @@
+<div id="add-row-form">
+    <table>
+        <tr ng-repeat="column in selectedtablecolumns">
+            <td ng-bind="column.column_name"></td>
+            <td><input type="text" ng-model="newrow[$index].value"></td>
+            <td ng-bind="column | columnType"></td>
+        </tr>
+    </table>
+    <button ng-click="addRow()">Добавить запись</button>
+</div>

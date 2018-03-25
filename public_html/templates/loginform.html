@@ -1,11 +1,13 @@
 <div id="login-form">
-    <div>
-        <label>Логин:</label>
-        <input ng-model="user.login" type="text">
-    </div> 
-    <div>
-        <label>Пароль:</label>
-        <input ng-model="user.password" type="password">
-    </div>
+    <table>
+        <tr>
+            <td><label>Логин:</label></td>
+            <td><input ng-model="user.login" type="text"></td>
+        </tr>
+        <tr>
+            <td><label>Пароль:</label></td>
+            <td><input ng-model="user.password" type="password"></td>
+        </tr>
+    </table>
     <button ng-click="userLogin()">Вход</button>
 </div>

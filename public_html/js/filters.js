@@ -92,4 +92,77 @@ App.filter('findUserSettings',function(){
         }
     };
 });
+App.filter('columnType',function(){
+    return function(input){
+        var string='';
+        switch(input.typname){
+            case 'int4':{
+                    string+='Целое число(4 байта)';
+                    break;
+            }
+            case 'varchar':{
+                    string+='Строка';
+                    break;
+            }
+            case 'float8':{
+                    string+='Вещественное число(8 байт)';
+                    break;
+            }
+            default:{
+                    string+='Не определено';
+            }
+        }
+        switch(input.contype){
+            case 'c':{
+                    string+=' | Ограничение-проверка';
+                    break;
+            }
+            case 'f':{
+                    string+=' | Внешний ключ';
+                    break;
+            }
+            case 'p':{
+                    string+=' | Первичный ключ';
+                    break;
+            }
+            case 'u':{
+                    string+=' | Ограничение-уникальности';
+                    break;
+            }
+            case 't':{
+                    string+=' | Триггер ограничения';
+                    break;
+            }
+            case 'e':{
+                    string+=' | Ограничение-исключение';
+                    break;
+            }
+        }
+        return string;
+    };
+});
+App.filter('noinherit',function(){
+    return function(input){
+        var result=[];
+        for(var i=0,j=0;i<input.length;i++){
+            if(input[i].inherit==false){
+                result[j]=input[i];
+                j++;
+            }
+        }
+        return result;
+    };
+});
+App.filter('inherit',function(){
+    return function(input){
+        var result=[];
+        for(var i=0,j=0;i<input.length;i++){
+            if(input[i].inherit==true){
+                result[j]=input[i];
+                j++;
+            }
+        }
+        return result;
+    };
+});
 

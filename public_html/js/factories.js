@@ -93,6 +93,51 @@ App.factory('tableSettingsDecoder',function(){
     };
 });
 
+App.factory('newRowModelFactory',function(){
+    return{
+        get:function(input){
+            var model=[];
+            var col={
+                column:null,
+                value:null
+            };
+            for(var i=0;i<input.length;i++){
+                model[i]=JSON.parse(JSON.stringify(col));
+                model[i].column=input[i].column_name;
+            }
+            return model;
+        }
+    };
+});
+
+App.factory('getSQLString',function(){
+    return{
+        getInsertString:function(input,table,columnsettings){
+            var string='INSERT INTO '+table+'(';
+            for(var i=0;i<input.length;i++){
+                string+=input[i].column;
+                if(i!=input.length-1)
+                    string+=',';
+            }
+            string+=') VALUES(';
+            for(var i=0;i<input.length;i++){
+                if(columnsettings[i].typname=='varchar'){
+                    string+="'";
+                }
+                string+=input[i].value;
+                if(columnsettings[i].typname=='varchar'){
+                    string+="'";
+                }
+                if(i!=input.length-1){
+                    string+=',';
+                }
+            }
+            string+=')';
+            return string;
+        }
+    };
+});
+
 App.factory('getTablePrivilegesModel',function(){
     return{
         get:function(ts,username){
@@ -187,5 +232,41 @@ App.factory('getTablePrivilegesModel',function(){
         }
     };
 });
-
+App.factory('getUserMembersModel',function(){
+    return{
+        get:function(current_user,users,members){
+            var model=[];
+            var element={
+                rolename:null,
+                oid:null,
+                default:false,
+                inherit:false,
+                selected:false
+            };
+            for(var i=0,j=0;i<users.length;i++){
+                if(current_user.oid==users[i].oid){
+                    continue;
+                }
+                else{
+                    model[j]=JSON.parse(JSON.stringify(element));
+                    model[j].rolename=users[i].rolname;
+                    model[j].oid=users[i].oid;
+                    j++;
+                }
+            }
+            for(var i=0;i<members.length;i++){
+                if(current_user.oid==members[i].member){
+                    var inheritoid=members[i].roleid;
+                    for(var j=0;j<model.length;j++){
+                        if(model[j].oid==inheritoid){
+                            model[j].inherit=true;
+                            model[j].default=true;
+                        }
+                    }
+                }
+            }
+            return model;
+        }
+    };
+});
 

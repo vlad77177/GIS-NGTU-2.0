@@ -5,8 +5,10 @@
                 "ng-show": {}
             }
         },
+        "add-row": {},
         "table-content": {},
         "create-user": {},
+        "user-inherit": {},
         "user-privileges": {},
         "user-settings": {},
         "table-menu": {}
