@@ -10,13 +10,17 @@ App.controller('AppController',['$scope',
     'newRowModelFactory',
     'getSQLString',
     'getUserMembersModel',
+    'getCreateRoleString',
+    'getUpdatePrivilegesString',
     function AppController($scope,
             $http,
             tableSettingsDecoder,
             getTablePrivilegesModel,
             newRowModelFactory,
             getSQLString,
-            getUserMembersModel
+            getUserMembersModel,
+            getCreateRoleString,
+            getUpdatePrivilegesString
         ){
       
         $scope.tablenames=false;
@@ -24,7 +28,7 @@ App.controller('AppController',['$scope',
         $scope.isuserlog=false;
         $scope.alreadycheck=false;
         $scope.newrow=[];
-        
+               
         $scope.getTableNames=function(){
             $http({method:'POST',data:$scope.user,url:'php/gettablenames.php'})
                         .success(function(data){
@@ -261,6 +265,9 @@ App.controller('AppController',['$scope',
             };
             $http({method:'POST',data:data,url:'php/addrow.php'})
                         .success(function(data){
+                            if(data!=0){
+                                alert(data);
+                            }
                             $scope.getTableContent($scope.selectedtablename);
                         })
                         .error(function(status){
@@ -268,6 +275,45 @@ App.controller('AppController',['$scope',
             });
         };
         
+        $scope.addRole=function(){
+            var string=getCreateRoleString.get($scope.newuser);
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $http({method:'POST',data:data,url:'php/createuser.php'})
+                        .success(function(data){
+                            if(data!=0){
+                                alert(data);
+                            }
+                            $scope.getUsers();
+                            $scope.showUserSettings($scope.newuser.name);
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
+        $scope.updatePrivileges=function(){
+            var string=getUpdatePrivilegesString.get($scope.tableprivilegesmodel,$scope.tablesettings,$scope.current_user.rolname);
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $http({method:'POST',data:data,url:'php/updateprivileges.php'})
+                        .success(function(data){
+                            if(data!=0){
+                                alert(data);
+                            }
+                            $scope.getTableSettings();
+                            $scope.showUserSettings($scope.current_user.name);
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
     }
 ]);
 

@@ -12,7 +12,7 @@
                     <label for="issuper">Суперпользователь</label>
                 </td>
                 <td>
-                    <input id="issuper" type="checkbox" ng-model="newuser.is_super">
+                    <input id="issuper" type="checkbox" ng-model="newuser.issuper">
                 </td>
             </tr>
             <tr>
@@ -20,7 +20,7 @@
                     <label for="islogin">Может авторизироваться</label>
                 </td>
                 <td>
-                    <input id="islogin" type="checkbox" ng-model="newuser.is_login">
+                    <input id="islogin" type="checkbox" ng-model="newuser.islogin">
                 </td>
             </tr>
             <tr>
@@ -28,7 +28,7 @@
                     <label for="isinherit">Наследует права</label>
                 </td>
                 <td>
-                    <input id="isinherit" type="checkbox" ng-model="newuser.is_inherit">
+                    <input id="isinherit" type="checkbox" ng-model="newuser.isinherit">
                 </td>
             </tr>
             <tr>
@@ -36,7 +36,7 @@
                     <label for="iscreatedb">Создает базы данных</label>
                 </td>
                 <td>
-                    <input id="iscreatedb" type="checkbox" ng-model="newuser.is_createdb">
+                    <input id="iscreatedb" type="checkbox" ng-model="newuser.iscreatedb">
                 </td>
             </tr>
             <tr>
@@ -44,9 +44,10 @@
                     <label for="iscreaterole">Создает роли</label>
                 </td>
                 <td>
-                    <input id="iscreaterole" type="checkbox" ng-model="newuser.is_createrole">
+                    <input id="iscreaterole" type="checkbox" ng-model="newuser.iscreaterole">
                 </td>
             </tr>
         </table>
+        <button ng-click="addRole()">Добавить пользователя</button>
     </div>
 </div>

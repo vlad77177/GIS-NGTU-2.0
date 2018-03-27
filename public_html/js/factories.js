@@ -270,3 +270,229 @@ App.factory('getUserMembersModel',function(){
     };
 });
 
+App.factory('getCreateRoleString',function(){
+    return{
+        get:function(input){
+            var string='CREATE ROLE '+input.name+' WITH';
+            if(input.islogin==true){
+                string+=' LOGIN PASSWORD \''+input.password+'\'';
+            }
+            else{
+                string+=' NOLOGIN';
+            }
+            if(input.issuper==true){
+                string+=' SUPERUSER';
+            }
+            if(input.isinherit==true){
+                string+=' INHERIT';
+            }
+            if(input.iscreatedb==true){
+                string+=' CREATEDB';
+            }
+            if(input.iscreaterole==true){
+                string+=' CREATEROLE';
+            }
+            return string;
+        }
+    };
+});
+
+App.factory('getUpdatePrivilegesString',function(){
+    return{
+        get:function(tpm,ts,username){
+            var string='';
+            
+            var grantselect='GRANT SELECT ON ';
+            var gs=false;
+            var grantupdate='GRANT UPDATE ON ';
+            var gu=false;
+            var grantinsert='GRANT INSERT ON ';
+            var gi=false;
+            var grantdelete='GRANT DELETE ON ';
+            var gd=false;
+            var revokeselect='REVOKE SELECT ON ';
+            var rs=false;
+            var revokeupdate='REVOKE UPDATE ON ';
+            var ru=false;
+            var revokeinsert='REVOKE INSERT ON ';
+            var ri=false;
+            var revokedelete='REVOKE DELETE ON ';
+            var rd=false;
+            
+            for(var i=0;i<tpm.length;i++){
+                var table=tpm[i].table;
+                var select=tpm[i].select.now;
+                if(select==true){
+                    for(var j=0;j<ts.length;j++){
+                        if(ts[j].relname==table){
+                            if(gs==true)
+                                grantselect+=',';
+                            grantselect+=table;
+                            gs=true;
+                        }
+                    }
+                }
+            }
+            grantselect+=' TO '+username;
+            
+            for(var i=0;i<tpm.length;i++){
+                var table=tpm[i].table;
+                var update=tpm[i].update.now;
+                if(update==true){
+                    for(var j=0;j<ts.length;j++){
+                        if(ts[j].relname==table){
+                            if(gu==true)
+                                grantupdate+=',';
+                            grantupdate+=table;
+                            gu=true;
+                        }
+                    }
+                }
+            }
+            grantupdate+=' TO '+username;
+            
+            for(var i=0;i<tpm.length;i++){
+                var table=tpm[i].table;
+                var insert=tpm[i].insert.now;
+                if(insert==true){
+                    for(var j=0;j<ts.length;j++){
+                        if(ts[j].relname==table){
+                            if(gi==true)
+                                grantinsert+=',';
+                            grantinsert+=table;
+                            gi=true;
+                        }
+                    }
+                }
+            }
+            grantinsert+=' TO '+username;
+            
+            for(var i=0;i<tpm.length;i++){
+                var table=tpm[i].table;
+                var del=tpm[i].delete.now;
+                if(del==true){
+                    for(var j=0;j<ts.length;j++){
+                        if(ts[j].relname==table){
+                            if(gd==true)
+                                grantdelete+=',';
+                            grantdelete+=table;
+                            gd=true;
+                        }
+                    }
+                }
+            }
+            grantdelete+=' TO '+username;
+            
+            for(var i=0;i<tpm.length;i++){
+                var table=tpm[i].table;
+                var select=tpm[i].select.now;
+                if(select==false){
+                    for(var j=0;j<ts.length;j++){
+                        if(ts[j].relname==table && ts[j].relacl!=null){
+                            for(var k=0;k<ts[j].relacl.length;k++){
+                                if(ts[j].relacl[k].name==username){
+                                    if(ts[j].relacl[k].select_r==true){
+                                        if(rs==true)
+                                            revokeselect+=',';
+                                        revokeselect+=table;
+                                        rs=true;
+                                    }
+                                }
+                            }                          
+                        }
+                    }
+                }
+            }
+            revokeselect+=' FROM '+username;
+            
+            for(var i=0;i<tpm.length;i++){
+                var table=tpm[i].table;
+                var update=tpm[i].update.now;
+                if(update==false){
+                    for(var j=0;j<ts.length;j++){
+                        if(ts[j].relname==table && ts[j].relacl!=null){
+                            for(var k=0;k<ts[j].relacl.length;k++){
+                                if(ts[j].relacl[k].name==username){
+                                    if(ts[j].relacl[k].update_w==true){
+                                        if(ru==true)
+                                            revokeupdate+=',';
+                                        revokeupdate+=table;
+                                        ru=true;
+                                    }
+                                }
+                            }                          
+                        }
+                    }
+                }
+            }
+            revokeupdate+=' FROM '+username;
+            
+            for(var i=0;i<tpm.length;i++){
+                var table=tpm[i].table;
+                var insert=tpm[i].insert.now;
+                if(insert==false){
+                    for(var j=0;j<ts.length;j++){
+                        if(ts[j].relname==table && ts[j].relacl!=null){
+                            for(var k=0;k<ts[j].relacl.length;k++){
+                                if(ts[j].relacl[k].name==username){
+                                    if(ts[j].relacl[k].insert_a==true){
+                                        if(ri==true)
+                                            revokeinsert+=',';
+                                        revokeinsert+=table;
+                                        ri=true;
+                                    }
+                                }
+                            }                          
+                        }
+                    }
+                }
+            }
+            revokeinsert+=' FROM '+username;
+            
+            for(var i=0;i<tpm.length;i++){
+                var table=tpm[i].table;
+                var del=tpm[i].delete.now;
+                if(del==false){
+                    for(var j=0;j<ts.length;j++){
+                        if(ts[j].relname==table && ts[j].relacl!=null){
+                            for(var k=0;k<ts[j].relacl.length;k++){
+                                if(ts[j].relacl[k].name==username){
+                                    if(ts[j].relacl[k].delete_d==true){
+                                        if(rd==true)
+                                            revokedelete+=',';
+                                        revokedelete+=table;
+                                        rd=true;
+                                    }
+                                }
+                            }                          
+                        }
+                    }
+                }
+            }
+            revokedelete+=' FROM '+username;
+            
+            if(gs==true)
+                string+=grantselect+';';
+            if(gu==true)
+                string+=grantupdate+';';
+            if(gi==true)
+                string+=grantinsert+';';
+            if(gd==true)
+                string+=grantdelete+';';
+            
+            if(rs==true)
+                string+=revokeselect+';';
+            if(ru==true)
+                string+=revokeupdate+';';
+            if(ri==true){
+                string+=revokeinsert+';';
+            }
+            if(rd==true){
+                string+=revokedelete+';';
+            }
+            
+            return string;
+            
+        }
+    };
+});
