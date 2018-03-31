@@ -16,6 +16,32 @@ and open the template in the editor.
     display:flex;
     justify-content: center;
 }
+button{
+    background-color: #009999;
+    border: none;
+    color: #ffffff;
+    padding: 15px 32px;
+    text-align: center;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    margin: 1vw;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+td button{
+    background-color: #009999;
+    border: none;
+    color: #ffffff;
+    padding:02px;
+    text-align: center;
+    -webkit-transition-duration: 0.4s;
+    transition-duration: 0.4s;
+    margin: 0vw;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+}
 header{
     min-height: 20vh;
     background-color: #009999;
@@ -76,20 +102,23 @@ body{
     padding: 0.5vw;
     cursor: pointer;
 }
-#table-menu,#users-menu{
+#table-menu,#users-menu,#query-menu{
     position: relative;
     width:20vw;
     border-right: 1px solid #009999;
     top:-7.2vh;
 }
-#table-head,#users-head,#groups-head{
+#table-head,#users-head,#groups-head,#query-head{
     font-size: 2vw;
     color:#ffffff;
     background-color: #009999;
     height:7vh;
     text-align: center;
 }
-.table-list-names,.user-list-names,.group-list-names{
+#query-head{
+    font-size:1.5vw;
+}
+.table-list-names,.user-list-names,.group-list-names,.query-list-names{
     font-size: 1.5vw;
     color:#009999;
     margin-left: 2vw;
@@ -97,7 +126,7 @@ body{
     /*border-bottom: 1px solid black;*/
     min-height: 5vh;
 }
-#tables-content,#users-content{
+#tables-content,#users-content,#query-content{
     display:flex;
     justify-content: flex-start;
     width: 100%;
@@ -107,7 +136,7 @@ body{
     color:#009999;
     margin-bottom:2vh;
 }
-#user-content-right,#table-content-right{
+#user-content-right,#table-content-right,#query-content-right{
     width:100%;
     max-width: 80vw;
     padding:2vw;

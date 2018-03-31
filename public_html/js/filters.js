@@ -165,4 +165,3 @@ App.filter('inherit',function(){
         return result;
     };
 });
-

@@ -1,0 +1,20 @@
+<div>
+    <div class="query-buttons" ng-show="openquerycategory==1">
+        <button ng-click="getQueryResult(1)">Списки ответственных сотрудников</button>
+        <button ng-click="getQueryResult(2)">Компьютеры в аудиториях</button>
+        <button ng-click="getQueryResult(3)">Оборудование в аудиториях</button>
+    </div>
+    <div class="query-buttons" ng-show="openquerycategory==2">
+        <button ng-click="getQueryResult(4)">Ответственные за оборудование</button>
+    </div>
+    <div id="query-result">
+        <table>
+            <tr>
+                <td ng-repeat="key in queryresultkeys">{{key}}</td>
+            </tr>
+            <tr ng-repeat="item in queryresult">
+                <td ng-repeat="key in queryresultkeys">{{item[key]}}</td>
+            </tr>
+        </table>
+    </div>
+</div>

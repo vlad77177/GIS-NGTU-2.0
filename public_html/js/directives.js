@@ -61,5 +61,19 @@ App.directive('userInherit',function(){
         replace:true
     };
 });
+App.directive('queryMenu',function(){
+    return{
+        restrict:'E',
+        templateUrl:'templates/querymenu.html',
+        replace:true
+    };
+});
+App.directive('queryContent',function(){
+    return{
+        restrict:'E',
+        templateUrl:'templates/querycontent.html',
+        replace:true
+    };
+});
 
 

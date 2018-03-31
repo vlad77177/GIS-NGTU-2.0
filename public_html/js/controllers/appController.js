@@ -6,27 +6,36 @@
 App.controller('AppController',['$scope',
     '$http',
     'tableSettingsDecoder',
+    'columnSettingsDecoder',
     'getTablePrivilegesModel',
+    'getColumnPrivilegesModel',
     'newRowModelFactory',
     'getSQLString',
     'getUserMembersModel',
     'getCreateRoleString',
     'getUpdatePrivilegesString',
+    'getUpdateColumnPrivilegesString',
+    'getQueryString',
     function AppController($scope,
             $http,
             tableSettingsDecoder,
+            columnSettingsDecoder,
             getTablePrivilegesModel,
+            getColumnPrivilegesModel,
             newRowModelFactory,
             getSQLString,
             getUserMembersModel,
             getCreateRoleString,
-            getUpdatePrivilegesString
+            getUpdatePrivilegesString,
+            getUpdateColumnPrivilegesString,
+            getQueryString
         ){
       
         $scope.tablenames=false;
         $scope.openedmenupage=1;
         $scope.isuserlog=false;
         $scope.alreadycheck=false;
+        $scope.columnprotectionshow=false;
         $scope.newrow=[];
                
         $scope.getTableNames=function(){
@@ -57,9 +66,11 @@ App.controller('AppController',['$scope',
             $http({method:'POST',data:data,url:'php/gettablecolumns.php'})
                         .success(function(data){
                             if(data!==false){
-                                console.log(data);
                                 $scope.selectedtablecolumns=data;
                                 $scope.newrow=newRowModelFactory.get($scope.selectedtablecolumns);
+                                $scope.columnprotectionsettings=columnSettingsDecoder.decode(data);
+                                $scope.columnprivilegesmodel=getColumnPrivilegesModel.get($scope.columnprotectionsettings,$scope.user.login);
+                                $scope.getTableContent(table_name);
                             }
                             else{
                                 $scope.selectedtablecolumns=undefined;
@@ -71,9 +82,16 @@ App.controller('AppController',['$scope',
         };
         
         $scope.getTableContent=function(table_name){
+            var columns=[];
+            for(var i=0,j=0;i<$scope.columnprivilegesmodel.length;i++){
+                if($scope.columnprivilegesmodel[i].select.now==true){
+                    columns[j++]=$scope.columnprivilegesmodel[i].column;
+                }
+            }
             var data={
                 user:null,
-                tablename:null
+                tablename:null,
+                columns:columns
             };
             data.user=$scope.user;
             data.tablename=table_name;
@@ -129,12 +147,13 @@ App.controller('AppController',['$scope',
             });
         };
         
-        $scope.getTable=function(table_name){
+        $scope.getTable=function(table_name){;
             $scope.selectedtablename=table_name;
             $scope.selectedtablecolumns=undefined;
             $scope.selectedtablecontent=undefined;
-            $scope.getTableColumns(table_name);
-            $scope.getTableContent(table_name);
+            $scope.columnprotectionsettings=undefined;
+            $scope.columnprivilegesmodel=undefined;
+            $scope.getTableColumns(table_name);                             
         };
         
         $scope.changeMenuPage=function(page){
@@ -314,7 +333,85 @@ App.controller('AppController',['$scope',
                             console.log(JSON.stringify(status));
             });
         };
-    }
+        
+        $scope.updateColumnPrivileges=function(tablename){
+            var string=getUpdateColumnPrivilegesString.get($scope.columnprivilegesmodel,
+                $scope.columnprotectionsettings,
+                $scope.currentcolumnprotectiontable,
+                $scope.current_user.rolname
+            );
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $scope.columnprotectionshow=false;
+            $http({method:'POST',data:data,url:'php/updateprivileges.php'})
+                        .success(function(data){
+                            if(data!=0){
+                                alert(data);
+                            }
+                            $scope.getTableSettings();
+                            $scope.showUserSettings($scope.current_user.name);
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
+        $scope.openQueryCategory=function(op){
+            $scope.queryresult=undefined;
+            $scope.queryresultkeys=undefined;
+            $scope.openquerycategory=op;
+        };
+        
+        $scope.getQueryResult=function(flag){
+            var string=getQueryString.get(flag);
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $http({method:'POST',data:data,url:'php/query.php'})
+                        .success(function(data){
+                            if(Array.isArray(data)){
+                                $scope.queryresult=data;
+                                $scope.queryresultkeys=Object.keys($scope.queryresult[0]);
+                            }
+                            else{
+                                alert("Ошибка! У вас нет прав на выполнение запроса!");
+                                $scope.queryresult=undefined;
+                            }                          
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
+        $scope.showColumnProtectionTable=function(tablename){
+            $scope.currentcolumnprotectiontable=tablename;
+            var data={
+                user:null,
+                tablename:null
+            };
+            data.user=$scope.user;
+            data.tablename=tablename;
+            $http({method:'POST',data:data,url:'php/gettablecolumns.php'})
+                        .success(function(data){
+                            if(data!==false){
+                                $scope.columnprotectionsettings=columnSettingsDecoder.decode(data);
+                                $scope.columnprotectionshow=true;
+                                $scope.columnprivilegesmodel=getColumnPrivilegesModel.get($scope.columnprotectionsettings,$scope.current_user.rolname);
+                            }
+                            else{
+                                $scope.columnprotectionsettings=undefined;
+                            }
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        }
 ]);
 
 

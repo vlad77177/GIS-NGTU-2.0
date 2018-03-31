@@ -5,12 +5,14 @@
                 "ng-show": {}
             }
         },
+        "query-menu": {},
         "add-row": {},
         "table-content": {},
         "create-user": {},
         "user-inherit": {},
         "user-privileges": {},
         "user-settings": {},
+        "query-content": {},
         "table-menu": {}
     },
     "attributes": {

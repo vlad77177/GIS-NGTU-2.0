@@ -11,7 +11,20 @@ $connect_string='host='.$host.
 $db=pg_connect($connect_string) or die('connection failed');
 
 if($db!==false){
-    $result=pg_fetch_all(pg_query($db,'SELECT * FROM '.$data['tablename'].''));
+    $columns='';
+    $result='';
+    if(count($data['columns'])==0){
+        $result=pg_fetch_all(pg_query($db,'SELECT * FROM '.$data['tablename'].''));
+    }
+    else{
+        for($i=0;$i<count($data['columns']);$i++){
+            if($i!=0){
+                $columns=$columns.',';
+            }
+            $columns=$columns.$data['columns'][$i];
+        }
+        $result=pg_fetch_all(pg_query($db,'SELECT '.$columns.' FROM '.$data['tablename'].''));
+    }
     if($result!=false){
         exit(json_encode($result));
     }

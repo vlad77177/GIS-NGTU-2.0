@@ -93,6 +93,101 @@ App.factory('tableSettingsDecoder',function(){
     };
 });
 
+App.factory('columnSettingsDecoder',function(){
+    return{
+        /*
+         * r - SELEST
+         * w - UPDATE
+         * a - INSERT
+         * d - DELETE
+         */
+        decode:function(data){
+            for(var i=0;i<data.length;i++){
+                if(data[i].attacl==null){
+                    continue;
+                }
+                else{
+                    /*
+                     * имя_роли=xxxx/назначивший право
+                     * x - права
+                     */
+                    
+                    var strings=[];
+                    var current_string='';
+                    for(var j=0;j<data[i].attacl.length;j++){
+                        if(data[i].attacl.charAt(j)=='{'){
+                            continue;
+                        }
+                        if(data[i].attacl.charAt(j)!=',' && j<data[i].attacl.length-1){
+                            current_string=current_string+data[i].attacl.charAt(j);
+                        }
+                        else{
+                            strings[strings.length]=current_string;
+                            current_string='';
+                        }
+                    }
+                    
+                    var users=[];
+                    
+                    var current_user={
+                        name:'',
+                        select_r:false,
+                        update_w:false,
+                        insert_a:false,
+                        delete_d:false
+                    };
+                    
+                    for(var j=0;j<strings.length;j++){
+                        var is_name_find=false;
+                        for(var k=0;k<strings[j].length;k++){
+                            if(strings[j].charAt(k)!='=' && !is_name_find){
+                                current_user.name=current_user.name+strings[j].charAt(k);
+                            }
+                            else{
+                                is_name_find=true;
+                                for(var s=k+1;s<strings[j].length;s++){
+                                    if(strings[j].charAt(s)!='/'){
+                                        switch(strings[j].charAt(s)){
+                                            case 'r':{
+                                                    current_user.select_r=true;
+                                                    break;
+                                            }
+                                            case 'w':{
+                                                    current_user.update_w=true;
+                                                    break;
+                                            }
+                                            case 'a':{
+                                                    current_user.insert_a=true;
+                                                    break;
+                                            }
+                                            case 'd':{
+                                                    current_user.delete_d=true;
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    else{
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        users[users.length]=JSON.parse(JSON.stringify(current_user));
+                        current_user.name='';
+                        current_user.select_r=false;
+                        current_user.update_w=false;
+                        current_user.insert_a=false;
+                        current_user.delete_d=false;
+                    }
+                    
+                    data[i].attacl=users;
+                }
+            }
+            return data;
+        }
+    };
+});
+
 App.factory('newRowModelFactory',function(){
     return{
         get:function(input){
@@ -232,6 +327,103 @@ App.factory('getTablePrivilegesModel',function(){
         }
     };
 });
+
+App.factory('getColumnPrivilegesModel',function(){
+    return{
+        get:function(cs,username){
+            console.log(username);
+            var model={
+                column:null,
+                select:null,
+                update:null,
+                insert:null,
+                delete:null
+            };
+            var option=[
+                {
+                    value:false,
+                    desc:'Запрещено'
+                },
+                {
+                    value:true,
+                    desc:'Разрешено'
+                }
+            ];
+            var select=['Разрешен','Запрещен'];
+            var models=[];
+            console.log(cs.length);//ok
+            for(var i=0;i<cs.length;i++){
+                models[i]=JSON.parse(JSON.stringify(model));
+                models[i].column=cs[i].attname;
+                if(cs[i].attacl==null){
+                    models[i].select={
+                        now:false,
+                        select:option
+                    };
+                    models[i].update={
+                        now:false,
+                        select:option
+                    };
+                    models[i].insert={
+                        now:false,
+                        select:option
+                    };
+                    models[i].delete={
+                        now:false,
+                        select:option
+                    };
+                }
+                else{
+                    var settings=null;
+                    for(var j=0;j<cs[i].attacl.length;j++){
+                        if(cs[i].attacl[j].name==username){
+                            settings=JSON.parse(JSON.stringify(cs[i].attacl[j]));
+                            break;
+                        }
+                    }
+                    if(settings==null){
+                        models[i].select={
+                            now:false,
+                            select:option
+                        };
+                        models[i].update={
+                            now:false,
+                            select:option
+                        };
+                        models[i].insert={
+                            now:false,
+                            select:option
+                        };
+                        models[i].delete={
+                            now:false,
+                            select:option
+                        };
+                    }
+                    else{
+                        models[i].select={
+                            now:settings.select_r,
+                            select:option
+                        };
+                        models[i].update={
+                            now:settings.update_w,
+                            select:option
+                        };
+                        models[i].insert={
+                            now:settings.insert_a,
+                            select:option
+                        };
+                        models[i].delete={
+                            now:settings.delete_d,
+                            select:option
+                        };
+                    }
+                }
+            }
+            return models;
+        }
+    };
+});
+
 App.factory('getUserMembersModel',function(){
     return{
         get:function(current_user,users,members){
@@ -493,6 +685,228 @@ App.factory('getUpdatePrivilegesString',function(){
             
             return string;
             
+        }
+    };
+});
+
+App.factory('getUpdateColumnPrivilegesString',function(){
+    return{
+        get:function(cpm,cs,tablename,username){
+            var string='';
+            
+            var grantselect='GRANT SELECT (';
+            var gs=false;
+            var grantupdate='GRANT UPDATE (';
+            var gu=false;
+            var grantinsert='GRANT INSERT (';
+            var gi=false;
+            var grantdelete='GRANT DELETE (';
+            var gd=false;
+            var revokeselect='REVOKE SELECT (';
+            var rs=false;
+            var revokeupdate='REVOKE UPDATE (';
+            var ru=false;
+            var revokeinsert='REVOKE INSERT (';
+            var ri=false;
+            var revokedelete='REVOKE DELETE (';
+            var rd=false;
+            
+            for(var i=0;i<cpm.length;i++){
+                var column=cpm[i].column;
+                var select=cpm[i].select.now;
+                if(select==true){
+                    for(var j=0;j<cs.length;j++){
+                        if(cs[j].attname==column){
+                            if(gs==true)
+                                grantselect+=',';
+                            grantselect+=column;
+                            gs=true;
+                        }
+                    }
+                }
+            }
+            grantselect+=') ON '+tablename+' TO '+username;
+            
+            for(var i=0;i<cpm.length;i++){
+                var column=cpm[i].column;
+                var update=cpm[i].update.now;
+                if(update==true){
+                    for(var j=0;j<cs.length;j++){
+                        if(cs[j].attname==column){
+                            if(gu==true)
+                                grantupdate+=',';
+                            grantupdate+=column;
+                            gu=true;
+                        }
+                    }
+                }
+            }
+            grantupdate+=') ON '+tablename+' TO '+username;
+            
+            for(var i=0;i<cpm.length;i++){
+                var column=cpm[i].column;
+                var insert=cpm[i].insert.now;
+                if(insert==true){
+                    for(var j=0;j<cs.length;j++){
+                        if(cs[j].relname==column){
+                            if(gi==true)
+                                grantinsert+=',';
+                            grantinsert+=column;
+                            gi=true;
+                        }
+                    }
+                }
+            }
+            grantinsert+=') ON '+tablename+' TO '+username;
+            
+            for(var i=0;i<cpm.length;i++){
+                var column=cpm[i].column;
+                var del=cpm[i].delete.now;
+                if(del==true){
+                    for(var j=0;j<cs.length;j++){
+                        if(cs[j].attname==column){
+                            if(gd==true)
+                                grantdelete+=',';
+                            grantdelete+=column;
+                            gd=true;
+                        }
+                    }
+                }
+            }
+            grantdelete+=') ON '+tablename+' TO '+username;
+            
+            for(var i=0;i<cpm.length;i++){
+                var column=cpm[i].column;
+                var select=cpm[i].select.now;
+                if(select==false){
+                    for(var j=0;j<cs.length;j++){
+                        if(cs[j].attname==column && cs[j].attacl!=null){
+                            for(var k=0;k<cs[j].attacl.length;k++){
+                                if(cs[j].attacl[k].name==username){
+                                    if(cs[j].attacl[k].select_r==true){
+                                        if(rs==true)
+                                            revokeselect+=',';
+                                        revokeselect+=column;
+                                        rs=true;
+                                    }
+                                }
+                            }                          
+                        }
+                    }
+                }
+            }
+            revokeselect+=') ON '+tablename+' FROM '+username;
+            
+            for(var i=0;i<cpm.length;i++){
+                var column=cpm[i].column;
+                var update=cpm[i].update.now;
+                if(update==false){
+                    for(var j=0;j<cs.length;j++){
+                        if(cs[j].attname==column && cs[j].attacl!=null){
+                            for(var k=0;k<cs[j].attacl.length;k++){
+                                if(cs[j].attacl[k].name==username){
+                                    if(cs[j].attacl[k].update_w==true){
+                                        if(ru==true)
+                                            revokeupdate+=',';
+                                        revokeupdate+=column;
+                                        ru=true;
+                                    }
+                                }
+                            }                          
+                        }
+                    }
+                }
+            }
+            revokeupdate+=') ON '+tablename+' FROM '+username;
+            
+            for(var i=0;i<cpm.length;i++){
+                var column=cpm[i].table;
+                var insert=cpm[i].insert.now;
+                if(insert==false){
+                    for(var j=0;j<cs.length;j++){
+                        if(cs[j].attname==column && cs[j].attacl!=null){
+                            for(var k=0;k<cs[j].attacl.length;k++){
+                                if(cs[j].attacl[k].name==username){
+                                    if(cs[j].attacl[k].insert_a==true){
+                                        if(ri==true)
+                                            revokeinsert+=',';
+                                        revokeinsert+=column;
+                                        ri=true;
+                                    }
+                                }
+                            }                          
+                        }
+                    }
+                }
+            }
+            revokeinsert+=') ON '+tablename+' FROM '+username;
+            
+            for(var i=0;i<cpm.length;i++){
+                var column=cpm[i].table;
+                var del=cpm[i].delete.now;
+                if(del==false){
+                    for(var j=0;j<cs.length;j++){
+                        if(cs[j].relname==column && cs[j].attacl!=null){
+                            for(var k=0;k<cs[j].attacl.length;k++){
+                                if(cs[j].attacl[k].name==username){
+                                    if(cs[j].attacl[k].delete_d==true){
+                                        if(rd==true)
+                                            revokedelete+=',';
+                                        revokedelete+=column;
+                                        rd=true;
+                                    }
+                                }
+                            }                          
+                        }
+                    }
+                }
+            }
+            revokedelete+=') ON '+tablename+' FROM '+username;
+            
+            if(gs==true)
+                string+=grantselect+';';
+            if(gu==true)
+                string+=grantupdate+';';
+            if(gi==true)
+                string+=grantinsert+';';
+            if(gd==true)
+                string+=grantdelete+';';
+            
+            if(rs==true)
+                string+=revokeselect+';';
+            if(ru==true)
+                string+=revokeupdate+';';
+            if(ri==true){
+                string+=revokeinsert+';';
+            }
+            if(rd==true){
+                string+=revokedelete+';';
+            }
+            
+            return string;
+            
+        }
+    };
+});
+
+
+App.factory('getQueryString',function(){
+    return{
+        get:function(flag){
+            switch(flag){
+                case 1:{
+                        return 'SELECT * FROM rooms_sotrudnik';
+                }
+                case 2:{
+                        return 'SELECT * FROM rooms_computers';
+                }
+                case 3:{
+                        return 'SELECT * FROM rooms_oborudovanie';
+                }
+                case 4:{
+                        return 'SELECT * FROM sotrudnik_oborudovanie';
+                }
+            }
         }
     };
 });
