@@ -20,7 +20,7 @@ and open the template in the editor.
     <body ng-controller="AppController">
         <header>
             <div id="header-logo">GIS NGTU 2.0</div>
-            <div id="user-login-header" ng-show="isuserlog && alreadycheck">Вы вошли как: {{user.login}}<button ng-click="logOut()">Выйти</button></div>
+            <div id="user-login-header" ng-show="isuserlog && alreadycheck">Вы вошли как: {{user.login}}<button ng-click="logOut()" class="btn-white">Выйти</button></div>
         </header>
         <div id="content" class="flex-center-none">
             <login-form ng-show="!isuserlog && alreadycheck"></login-form>

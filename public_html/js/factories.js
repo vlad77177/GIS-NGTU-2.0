@@ -910,3 +910,56 @@ App.factory('getQueryString',function(){
         }
     };
 });
+
+App.factory('getUpdateMembersString',function(){
+    return{
+        get:function(model,username){
+            var string='';
+            var string_g='GRANT ';
+            var gfind=false;
+            var string_r='REVOKE ';
+            var rfind=false;
+            for(var i=0,g=0,r=0;i<model.length;i++){
+                if(model[i].default!=model[i].inherit){
+                    if(model[i].inherit==true){
+                        if(g!=0){
+                            string_g+=',';
+                        }
+                        string_g+=model[i].rolename;
+                        g++;
+                        gfind=true;
+                    }
+                    if(model[i].inherit==false){
+                        if(r!=0){
+                            string_r+=',';
+                        }
+                        string_r+=model[i].rolename;
+                        r++;
+                        rfind=true;
+                    }
+                }
+            }
+            if(gfind==true){
+                string_g+=' TO '+username;
+            }
+            if(rfind==true){
+                string_r+=' FROM '+username;
+            }
+            if(gfind==true){
+                string+=string_g;
+                if(rfind==true){
+                    string+=';'+string_r+';';
+                }
+            }
+            else{
+                if(rfind==true){
+                    string+=string_r+';';
+                }
+                else{
+                    string=false;
+                }
+            }
+            return string;
+        }
+    };
+});

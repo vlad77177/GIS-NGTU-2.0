@@ -15,6 +15,7 @@ App.controller('AppController',['$scope',
     'getCreateRoleString',
     'getUpdatePrivilegesString',
     'getUpdateColumnPrivilegesString',
+    'getUpdateMembersString',
     'getQueryString',
     function AppController($scope,
             $http,
@@ -28,6 +29,7 @@ App.controller('AppController',['$scope',
             getCreateRoleString,
             getUpdatePrivilegesString,
             getUpdateColumnPrivilegesString,
+            getUpdateMembersString,
             getQueryString
         ){
       
@@ -128,7 +130,6 @@ App.controller('AppController',['$scope',
         $scope.getUserMembers=function(){
             $http({method:'POST',data:$scope.user,url:'php/getusermembers.php'})
                         .success(function(data){
-                            console.log(data);
                             $scope.usermembers=data;
                         })
                         .error(function(status){
@@ -346,13 +347,41 @@ App.controller('AppController',['$scope',
                 string:string
             };
             $scope.columnprotectionshow=false;
-            $http({method:'POST',data:data,url:'php/updateprivileges.php'})
+            $http({method:'POST',data:data,url:'php/query.php'})
                         .success(function(data){
                             if(data!=0){
                                 alert(data);
                             }
-                            $scope.getTableSettings();
-                            $scope.showUserSettings($scope.current_user.name);
+                            $scope.getUserMembers();
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
+        $scope.updateInheritData=function(){
+            var string=getUpdateMembersString.get($scope.usermembersmodel,$scope.current_user.rolname);
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $http({method:'POST',data:data,url:'php/query.php'})
+                        .success(function(data){
+                            if(data!=0){
+                                alert(data);
+                            }
+                            $http({method:'POST',data:$scope.user,url:'php/getusermembers.php'})
+                                .success(function(data){
+                                    $scope.usermembers=data;
+                                    $scope.usermembersmodel=getUserMembersModel.get($scope.current_user,
+                                        $scope.users,
+                                        $scope.usermembers
+                                    );
+                                })
+                                .error(function(status){
+                                    console.log(JSON.stringify(status));
+                            });
                         })
                         .error(function(status){
                             console.log(JSON.stringify(status));

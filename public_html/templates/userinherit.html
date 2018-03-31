@@ -1,14 +1,17 @@
-<div id="user-inherit-form">
-    <div id="user-noinherit-left">
-        <div class="user-inherit-label">Не включен</div>
-        <div ng-click="um.selected=!um.selected" ng-class="getUserInheritValueClass(um)" ng-repeat="um in (usermembersmodel | noinherit)" ng-bind="um.rolename"></div>
+<div>
+    <div id="user-inherit-form">
+        <div id="user-noinherit-left">
+            <div class="user-inherit-label">Не включен</div>
+            <div ng-click="um.selected=!um.selected" ng-class="getUserInheritValueClass(um)" ng-repeat="um in (usermembersmodel | noinherit)" ng-bind="um.rolename"></div>
+        </div>
+        <div id="user-underit-buttons">
+            <button ng-click="newInherit()">>></button>
+            <button ng-click="newNoInherit()"><<</button>
+        </div>
+        <div id="user-inherit-right">
+            <div class="user-inherit-label">Включен</div>
+            <div ng-click="um.selected=!um.selected" ng-class="getUserInheritValueClass(um)" class="user-inherit-value" ng-repeat="um in (usermembersmodel | inherit)" ng-bind="um.rolename"></div>
+        </div>
     </div>
-    <div id="user-underit-buttons">
-        <button ng-click="newInherit()">>></button>
-        <button ng-click="newNoInherit()"><<</button>
-    </div>
-    <div id="user-inherit-right">
-        <div class="user-inherit-label">Включен</div>
-        <div ng-click="um.selected=!um.selected" ng-class="getUserInheritValueClass(um)" class="user-inherit-value" ng-repeat="um in (usermembersmodel | inherit)" ng-bind="um.rolename"></div>
-    </div>
+    <button ng-click="updateInheritData()">Обновить данные о наследовании</button>
 </div>
