@@ -41,6 +41,7 @@ td button{
     text-decoration: none;
     font-size: 16px;
     cursor: pointer;
+    padding:1vh;
 }
 .btn-white{
     background-color: #ffffff;
@@ -112,15 +113,16 @@ body{
     border-right: 1px solid #009999;
     top:-7.2vh;
 }
-#table-head,#users-head,#groups-head,#query-head{
+#table-head,#users-head,#groups-head,.query-head{
     font-size: 2vw;
     color:#ffffff;
     background-color: #009999;
-    height:7vh;
+    min-height:7vh;
     text-align: center;
 }
-#query-head{
+.query-head{
     font-size:1.5vw;
+    min-height:7vh;
 }
 .table-list-names,.user-list-names,.group-list-names,.query-list-names{
     font-size: 1.5vw;
@@ -176,11 +178,30 @@ body{
 table{
     width:100%;
 }
-table tr, table td{
-    border: 2px solid #009999;
+table tr{
+    border: none;
+    background-color: #cccccc;
+}
+table tr:first-child{
+    background-color: #999999;
 }
 table td{
     padding: 3px 3px 3px 3px;
+    text-align: center;
+}
+#add-row-form table tr,#create-user-settings table tr,#user-settings table tr,#user-privileges table tr,.add-form table tr{
+    background-color: #ffffff;
+}
+#add-row-form table tr td,#create-user-settings table tr td,#user-settings table tr td,.add-form table tr td{
+    text-align: left;
+}
+#user-privileges table tr td select{
+    font-size: 3vh;
+    background-color: inherit;
+}
+#user-privileges table{
+    border:2px solid #009999;
+    margin-top:3vh;
 }
 .td-changed{
     background-color:#ffff00;
@@ -257,5 +278,28 @@ table td{
 .user-inherit-value-new{
     background-color: #ffff00;
 }
-
+#user-privileges table tr td select{
+    border:none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.add-form{
+    border:2px solid #009999;
+    padding:3vh;
+    margin:10vh;
+}
+.add-form table tr td select{
+    border:1px solid;
+    border-color: #666666;
+}
+.add-form table tr td select,.add-form table tr td input{
+    width:80%;
+}
+#create-user-form input{
+    margin-left:1.5vw;
+}
+#create-user-form button{
+    width:40%;
+}
 

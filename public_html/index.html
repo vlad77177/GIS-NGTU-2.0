@@ -17,9 +17,9 @@ and open the template in the editor.
         <script src="js/filters.js"></script>
         <script src="js/factories.js"></script>
     </head>
-    <body ng-controller="AppController">
+    <body ng-controller="AppController" ng-cloak>
         <header>
-            <div id="header-logo">GIS NGTU 2.0</div>
+            <div id="header-logo">GIS NGTU</div>
             <div id="user-login-header" ng-show="isuserlog && alreadycheck">Вы вошли как: {{user.login}}<button ng-click="logOut()" class="btn-white">Выйти</button></div>
         </header>
         <div id="content" class="flex-center-none">

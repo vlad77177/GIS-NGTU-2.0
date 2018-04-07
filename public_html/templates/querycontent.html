@@ -1,4 +1,4 @@
-<div>
+<div ng-init="showqueryaddform=false">
     <div class="query-buttons" ng-show="openquerycategory==1">
         <button ng-click="getQueryResult(1)">Списки ответственных сотрудников</button>
         <button ng-click="getQueryResult(2)">Компьютеры в аудиториях</button>
@@ -7,7 +7,7 @@
     <div class="query-buttons" ng-show="openquerycategory==2">
         <button ng-click="getQueryResult(4)">Ответственные за оборудование</button>
     </div>
-    <div id="query-result">
+    <div id="query-result" ng-show="!showqueryaddform">
         <table>
             <tr>
                 <td ng-repeat="key in queryresultkeys">{{key}}</td>
@@ -16,5 +16,22 @@
                 <td ng-repeat="key in queryresultkeys">{{item[key]}}</td>
             </tr>
         </table>
+    </div>
+    <div class="add-form" ng-show="showqueryaddform">
+        <table ng-init="selectorindex=0">
+            <tr ng-repeat="elm in queryaddformmodel.input.elements">
+                <td>
+                    <div ng-bind="elm.description"></div>
+                </td>
+                <td ng-show="elm.targettable==undefined">
+                    <input type="text" ng-model="elm.value">
+                </td>
+                <td ng-show="elm.targettable!=undefined">
+                    <select ng-model="elm.value" ng-options="op[elm.targetcolumnvalue] as getFullSelectDescription(op,elm) for op in datafromaddformselectors[elm.index]">
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <button ng-click="addFormElement()">Добавить</button>
     </div>
 </div>

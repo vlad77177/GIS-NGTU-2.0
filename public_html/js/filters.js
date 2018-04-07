@@ -2,6 +2,9 @@
 App.filter('users',function(){
     return function(input){
         //var blacklist=['postgres'];
+        if(input==undefined){
+            return null;
+        }
         var users=[];
         for(var i=0;i<input.length;i++){
             if(input[i].rolcanlogin==='t'){
@@ -13,6 +16,9 @@ App.filter('users',function(){
 });
 App.filter('groups',function(){
     return function(input){
+        if(input==undefined){
+            return null;
+        }
         var groups=[];
         for(var i=0;i<input.length;i++){
             if(input[i].rolcanlogin==='f'){
@@ -24,6 +30,9 @@ App.filter('groups',function(){
 });
 App.filter('userSetting',function(){
     return function(input){
+        if(input==undefined){
+            return null;
+        }
         if(input==='t')
             return 'Да';
         else
@@ -32,6 +41,9 @@ App.filter('userSetting',function(){
 });
 App.filter('userSettingConnections',function(){
     return function(input){
+        if(input==undefined){
+            return null;
+        }
         if(input==-1)
             return 'Infinity';
         else
@@ -40,6 +52,9 @@ App.filter('userSettingConnections',function(){
 });
 App.filter('userPrivileges',function(){
     return function(input){
+        if(input==undefined){
+            return null;
+        }
         if(input==true)
             return 'Разрешено';
         else
@@ -85,6 +100,9 @@ App.filter('relaclUserFind',function(){
 });
 App.filter('findUserSettings',function(){
     return function(input,users){
+        if(input==undefined || users==undefined){
+            return null;
+        }
         for(var i=0;i<users.length;i++){
             if(input.login==users[i].rolname){
                 return users[i];
@@ -93,7 +111,10 @@ App.filter('findUserSettings',function(){
     };
 });
 App.filter('columnType',function(){
-    return function(input){
+    return function(input,index,constraint){
+        if(input==undefined){
+            return null;
+        }
         var string='';
         switch(input.typname){
             case 'int4':{
@@ -112,6 +133,38 @@ App.filter('columnType',function(){
                     string+='Не определено';
             }
         }
+        //string+=constraint[0].conkey[1];
+        for(var i=0;i<constraint.length;i++){
+            if((index+1)==constraint[i].conkey[1]){
+                switch(constraint[i].contype){
+                    case 'c':{
+                            string+=' | Ограничение-проверка';
+                            break;
+                    }
+                    case 'f':{
+                            string+=' | Внешний ключ';
+                            break;
+                    }
+                    case 'p':{
+                            string+=' | Первичный ключ';
+                            break;
+                    }
+                    case 'u':{
+                            string+=' | Ограничение-уникальности';
+                            break;
+                    }
+                    case 't':{
+                            string+=' | Триггер ограничения';
+                            break;
+                    }
+                    case 'e':{
+                            string+=' | Ограничение-исключение';
+                            break;
+                    }
+                }
+            }
+        }
+        /*
         switch(input.contype){
             case 'c':{
                     string+=' | Ограничение-проверка';
@@ -137,12 +190,16 @@ App.filter('columnType',function(){
                     string+=' | Ограничение-исключение';
                     break;
             }
-        }
+        }*/
+        
         return string;
     };
 });
 App.filter('noinherit',function(){
     return function(input){
+        if(input==undefined){
+            return null;
+        }
         var result=[];
         for(var i=0,j=0;i<input.length;i++){
             if(input[i].inherit==false){
@@ -155,6 +212,9 @@ App.filter('noinherit',function(){
 });
 App.filter('inherit',function(){
     return function(input){
+        if(input==undefined){
+            return null;
+        }
         var result=[];
         for(var i=0,j=0;i<input.length;i++){
             if(input[i].inherit==true){

@@ -233,6 +233,34 @@ App.factory('getSQLString',function(){
     };
 });
 
+App.factory('getSQLStringFromForm',function(){
+    return{
+        getInsertString:function(input,table){
+            var string='INSERT INTO '+table+'(';
+            for(var i=0;i<input.length;i++){
+                string+=input[i].column;
+                if(i!=input.length-1)
+                    string+=',';
+            }
+            string+=') VALUES(';
+            for(var i=0;i<input.length;i++){
+                if(columnsettings[i].typname=='varchar'){
+                    string+="'";
+                }
+                string+=input[i].value;
+                if(columnsettings[i].typname=='varchar'){
+                    string+="'";
+                }
+                if(i!=input.length-1){
+                    string+=',';
+                }
+            }
+            string+=')';
+            return string;
+        }
+    };
+});
+
 App.factory('getTablePrivilegesModel',function(){
     return{
         get:function(ts,username){
@@ -960,6 +988,125 @@ App.factory('getUpdateMembersString',function(){
                 }
             }
             return string;
+        }
+    };
+});
+
+App.factory('getItemModel',function(){
+    return{
+        get:function(modelname){
+            var model;
+            switch(modelname){
+                case 'room':{
+                    model={
+                        table:'rooms',
+                        input:{
+                            elements:[
+                                {
+                                    value:null,
+                                    description:'Номер аудитории',
+                                    column:'unique_kadastr_num'
+                                },
+                                {
+                                    value:null,
+                                    description:'Описание',
+                                    column:'opisanie'
+                                },
+                                {
+                                    value:null,
+                                    description:'Тип комнаты',
+                                    index:0,
+                                    column:'id_type_room',
+                                    targettable:'types_rooms',
+                                    targetcolumnvalue:'id_tip_room',
+                                    descriptionvalue:[
+                                        'opisanie'
+                                    ]
+                                },
+                                {
+                                    value:null,
+                                    description:'Ответственный сотрудник',
+                                    index:1,
+                                    column:'id_sotr',
+                                    targettable:'sotrudniki',
+                                    targetcolumnvalue:'id_sotrudnika',
+                                    descriptionvalue:[
+                                        'familia',
+                                        'imya',
+                                        'otchestvo'
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+                    break;  
+                }
+                case 'sotrudnik':{
+                        model={
+                        table:'sotrudniki',
+                        input:{
+                            elements:[
+                                {
+                                    value:null,
+                                    description:'Имя',
+                                    column:'imya',
+                                    shielding:true
+                                },
+                                {
+                                    value:null,
+                                    description:'Фамилия',
+                                    column:'familia',
+                                    shielding:true
+                                },
+                                {
+                                    value:null,
+                                    description:'Отчество',
+                                    column:'otchestvo'
+                                },
+                                {
+                                    value:null,
+                                    description:'Серия паспорта',
+                                    column:'pasport_seria'
+                                },
+                                {
+                                    value:null,
+                                    description:'Номер паспорта',
+                                    column:'pasport_nomer'
+                                },
+                                {
+                                    value:null,
+                                    description:'Контактный телефон',
+                                    column:'kontaktniy_telephone'
+                                },
+                                {
+                                    value:null,
+                                    description:'Отдел',
+                                    index:0,
+                                    column:'id_otdela',
+                                    targettable:'otdely',
+                                    targetcolumnvalue:'id_otdela',
+                                    descriptionvalue:[
+                                        'nazvanie'
+                                    ]
+                                },
+                                {
+                                    value:null,
+                                    description:'Кафедра',
+                                    index:1,
+                                    column:'id_kafedra',
+                                    targettable:'kafedry',
+                                    targetcolumnvalue:'id_kafedry',
+                                    descriptionvalue:[
+                                        'nazvanie_kafedry'
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+                    break;
+                }
+            }
+            return model;
         }
     };
 });

@@ -17,6 +17,7 @@ App.controller('AppController',['$scope',
     'getUpdateColumnPrivilegesString',
     'getUpdateMembersString',
     'getQueryString',
+    'getItemModel',
     function AppController($scope,
             $http,
             tableSettingsDecoder,
@@ -30,7 +31,8 @@ App.controller('AppController',['$scope',
             getUpdatePrivilegesString,
             getUpdateColumnPrivilegesString,
             getUpdateMembersString,
-            getQueryString
+            getQueryString,
+            getItemModel
         ){
       
         $scope.tablenames=false;
@@ -73,9 +75,31 @@ App.controller('AppController',['$scope',
                                 $scope.columnprotectionsettings=columnSettingsDecoder.decode(data);
                                 $scope.columnprivilegesmodel=getColumnPrivilegesModel.get($scope.columnprotectionsettings,$scope.user.login);
                                 $scope.getTableContent(table_name);
+                                $scope.getTableConstraint(table_name);
                             }
                             else{
                                 $scope.selectedtablecolumns=undefined;
+                            }
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
+        $scope.getTableConstraint=function(table_name){
+            var data={
+                user:null,
+                tablename:null
+            };
+            data.user=$scope.user;
+            data.tablename=table_name;
+            $http({method:'POST',data:data,url:'php/gettableconstraint.php'})
+                        .success(function(data){
+                            if(data!==false){
+                                $scope.tableconstraint=data;
+                            }
+                            else{
+                                $scope.tableconstraint=undefined;
                             }
                         })
                         .error(function(status){
@@ -154,7 +178,7 @@ App.controller('AppController',['$scope',
             $scope.selectedtablecontent=undefined;
             $scope.columnprotectionsettings=undefined;
             $scope.columnprivilegesmodel=undefined;
-            $scope.getTableColumns(table_name);                             
+            $scope.getTableColumns(table_name);
         };
         
         $scope.changeMenuPage=function(page){
@@ -295,6 +319,10 @@ App.controller('AppController',['$scope',
             });
         };
         
+        $scope.addFormElement=function(){
+            var string=getSQLString.getInsertStringFromForm();
+        };
+        
         $scope.addRole=function(){
             var string=getCreateRoleString.get($scope.newuser);
             var data={
@@ -322,7 +350,7 @@ App.controller('AppController',['$scope',
                 password:$scope.user.password,
                 string:string
             };
-            $http({method:'POST',data:data,url:'php/updateprivileges.php'})
+            $http({method:'POST',data:data,url:'php/query.php'})
                         .success(function(data){
                             if(data!=0){
                                 alert(data);
@@ -440,7 +468,52 @@ App.controller('AppController',['$scope',
                             console.log(JSON.stringify(status));
             });
         };
-        }
+        
+        $scope.getFullSelectDescription=function(op,elm){
+            var string='';
+            for(var i=0;i<elm.descriptionvalue.length;i++){
+                string+=op[elm.descriptionvalue[i]]+' ';
+            }
+            return string;
+        };
+        
+        $scope.getQueryAddForm=function(table){
+
+            $scope.queryaddformmodel=getItemModel.get(table);
+            $scope.showqueryaddform=true;
+            $scope.datafromaddformselectors=[];
+            
+            for(var i=0,n=0;i<$scope.queryaddformmodel.input.elements.length;i++){
+                if($scope.queryaddformmodel.input.elements[i].targettable!=undefined){
+                    var columns=[];
+                    var c=0;
+                    columns[c]=$scope.queryaddformmodel.input.elements[i].targetcolumnvalue;
+                    c++;
+                    for(var j=0;j<$scope.queryaddformmodel.input.elements[i].descriptionvalue.length;j++,c++){
+                        columns[c]=$scope.queryaddformmodel.input.elements[i].descriptionvalue[j];
+                    }
+                    var data={
+                        user:null,
+                        tablename:null,
+                        columns:columns
+                    };
+                    data.user=$scope.user;
+                    data.tablename=$scope.queryaddformmodel.input.elements[i].targettable;
+                    $http({method:'POST',data:data,url:'php/gettablecontent.php'})
+                                .success(function(data){
+                                    if(Array.isArray(data)){
+                                        $scope.datafromaddformselectors[n]=data;
+                                        n++;
+                                    }
+                                })
+                                .error(function(status){
+                                    console.log(JSON.stringify(status));
+                    });
+                }
+            }
+        };
+        
+    }
 ]);
 
 

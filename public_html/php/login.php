@@ -1,8 +1,8 @@
 <?php
 
-include 'connection.php';
-
 session_start();
+
+include 'connection.php';
 
 $user= json_decode(file_get_contents('php://input'),true);
 $connect_string='host='.$host.
