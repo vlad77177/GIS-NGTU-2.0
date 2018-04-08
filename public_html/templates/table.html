@@ -2,8 +2,14 @@
     <div ng-show="selectedtablename!=undefined">Таблица: {{selectedtablename}}</div>
     <table>
         <tr><td ng-repeat="table_column in selectedtablecolumns" ng-bind="table_column.column_name"></td></tr>
-        <tr ng-repeat="table_row in selectedtablecontent">
-            <td ng-repeat="table_column in selectedtablecolumns" ng-bind="table_row[table_column.column_name]"></td>
+        <tr ng-class="{trselected : selectrow[$index]==true}" ng-init="selectrow[$index]=false" ng-click="selectRow(selectedtablename,$index)" ng-repeat="table_row in selectedtablecontent" ng-repeat="sr in selectrow">
+            <td ng-repeat="table_column in selectedtablecolumns">
+                <div class="div-simple" ng-show="!selectrow[$parent.$index]" ng-bind="table_row[table_column.column_name]"></div>
+                <input ng-show="selectrow[$parent.$index]" type="text" ng-model="table_row[table_column.column_name]">
+            </td>
         </tr>
     </table>
+    <button ng-show="selectrow | someRowsSelected" class="btn-yellow" ng-click="updateSelectedRows()">Сохранить</button>
+    <button ng-show="selectrow | someRowsSelected" class="btn-red" ng-click="deleteSelectedRows()">Удалить</button>
+    <button ng-show="selectrow | someRowsSelected" ng-click="resetRowsSelect()">Назад</button>
 </div>

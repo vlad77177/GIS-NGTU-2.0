@@ -225,3 +225,18 @@ App.filter('inherit',function(){
         return result;
     };
 });
+App.filter('someRowsSelected',function(){
+    return function(input){
+        if(input==undefined){
+            return null;
+        }
+        var result=false;
+        for(var i=0;i<input.length;i++){
+            if(input[i]==true){
+                result=true;
+                break;
+            }
+        }
+        return result;
+    }
+});

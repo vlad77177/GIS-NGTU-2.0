@@ -11,6 +11,8 @@ App.controller('AppController',['$scope',
     'getColumnPrivilegesModel',
     'newRowModelFactory',
     'getSQLString',
+    'getUpdateSQLString',
+    'getDeleteSQLString',
     'getUserMembersModel',
     'getCreateRoleString',
     'getUpdatePrivilegesString',
@@ -18,6 +20,7 @@ App.controller('AppController',['$scope',
     'getUpdateMembersString',
     'getQueryString',
     'getItemModel',
+    'getSQLStringFromForm',
     function AppController($scope,
             $http,
             tableSettingsDecoder,
@@ -26,13 +29,16 @@ App.controller('AppController',['$scope',
             getColumnPrivilegesModel,
             newRowModelFactory,
             getSQLString,
+            getUpdateSQLString,
+            getDeleteSQLString,
             getUserMembersModel,
             getCreateRoleString,
             getUpdatePrivilegesString,
             getUpdateColumnPrivilegesString,
             getUpdateMembersString,
             getQueryString,
-            getItemModel
+            getItemModel,
+            getSQLStringFromForm
         ){
       
         $scope.tablenames=false;
@@ -41,6 +47,7 @@ App.controller('AppController',['$scope',
         $scope.alreadycheck=false;
         $scope.columnprotectionshow=false;
         $scope.newrow=[];
+        $scope.selectrow=[];
                
         $scope.getTableNames=function(){
             $http({method:'POST',data:$scope.user,url:'php/gettablenames.php'})
@@ -125,6 +132,10 @@ App.controller('AppController',['$scope',
                         .success(function(data){
                             if(Array.isArray(data)){
                                 $scope.selectedtablecontent=data;
+                                $scope.copyselectedtablecontent=JSON.parse(JSON.stringify(data));
+                                for(var i=0;i<$scope.selectedtablecontent.length;i++){
+                                    $scope.selectrow[i]=false;
+                                }
                             }
                             else{
                                 $scope.selectedtablecontent=undefined;
@@ -319,8 +330,24 @@ App.controller('AppController',['$scope',
             });
         };
         
-        $scope.addFormElement=function(){
-            var string=getSQLString.getInsertStringFromForm();
+        $scope.addFormElement=function(table_name){
+            var string=getSQLStringFromForm.getInsertString($scope.queryaddformmodel.input.elements,table_name);
+            //alert(string);
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $http({method:'POST',data:data,url:'php/addrow.php'})
+                        .success(function(data){
+                            if(data!=0){
+                                alert(data);
+                            }
+                            $scope.getTableContent($scope.selectedtablename);
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
         };
         
         $scope.addRole=function(){
@@ -513,6 +540,69 @@ App.controller('AppController',['$scope',
             }
         };
         
+        $scope.selectRow=function(tablename,index){
+            if($scope.selectrow[index]==false)
+                $scope.selectrow[index]=!$scope.selectrow[index];
+        };
+        
+        $scope.resetRowsSelect=function(){
+            $scope.selectedtablecontent=JSON.parse(JSON.stringify($scope.copyselectedtablecontent));
+            for(var i=0;i<$scope.selectedtablecontent.length;i++){
+                $scope.selectrow[i]=false;
+            }
+        };
+        
+        $scope.updateSelectedRows=function(){
+            var string=getUpdateSQLString.getString(
+                    $scope.selectedtablecontent,
+                    $scope.copyselectedtablecontent,
+                    $scope.selectedtablename,
+                    $scope.selectedtablecolumns,
+                    $scope.selectrow
+            );
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $http({method:'POST',data:data,url:'php/query.php'})
+                        .success(function(data){
+                            if(data!=0){
+                                alert(data);
+                            }
+                            $scope.resetRowsSelect();
+                            $scope.getTableContent($scope.selectedtablename);
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
+        
+        $scope.deleteSelectedRows=function(){
+            var string=getDeleteSQLString.getString(
+                    $scope.selectedtablecontent,
+                    $scope.copyselectedtablecontent,
+                    $scope.selectedtablename,
+                    $scope.selectedtablecolumns,
+                    $scope.selectrow
+            );
+            var data={
+                login:$scope.user.login,
+                password:$scope.user.password,
+                string:string
+            };
+            $http({method:'POST',data:data,url:'php/query.php'})
+                        .success(function(data){
+                            if(data!=0){
+                                alert(data);
+                            }
+                            $scope.resetRowsSelect();
+                            $scope.getTableContent($scope.selectedtablename);
+                        })
+                        .error(function(status){
+                            console.log(JSON.stringify(status));
+            });
+        };
     }
 ]);
 

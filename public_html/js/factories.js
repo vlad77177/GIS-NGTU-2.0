@@ -233,6 +233,76 @@ App.factory('getSQLString',function(){
     };
 });
 
+App.factory('getUpdateSQLString',function(){
+    return{
+        getString:function(content,copycontent,tablename,columnsettings,selected){
+            var string='';
+            for(var i=0;i<selected.length;i++){
+                if(selected[i]==true){
+                    string+='UPDATE '+tablename+' SET ';
+                    for(var j=0;j<columnsettings.length;j++){
+                        if(content[i][columnsettings[j].column_name]==undefined)
+                            continue;
+                        string+=columnsettings[j].column_name+'=';
+                        if(columnsettings[j].typname=='varchar')
+                            string+="'";
+                        string+=content[i][columnsettings[j].column_name];
+                        if(columnsettings[j].typname=='varchar')
+                            string+="'";
+                        if(j!=columnsettings.length-1){
+                            string+=',';
+                        }
+                    }
+                    string+=' WHERE ';
+                    for(var j=0;j<columnsettings.length;j++){
+                        if(copycontent[i][columnsettings[j].column_name]==undefined)
+                            continue;
+                        string+=columnsettings[j].column_name+'=';
+                        if(columnsettings[j].typname=='varchar')
+                            string+="'";
+                        string+=copycontent[i][columnsettings[j].column_name];
+                        if(columnsettings[j].typname=='varchar')
+                            string+="'";
+                        if(j!=columnsettings.length-1){
+                            string+=' AND ';
+                        }
+                    }
+                    string+=';';
+                }
+            }
+            return string;
+        }
+    };
+});
+
+App.factory('getDeleteSQLString',function(){
+    return{
+        getString:function(content,copycontent,tablename,columnsettings,selected){
+            var string='';
+            for(var i=0;i<selected.length;i++){
+                if(selected[i]==true){
+                    string+='DELETE FROM '+tablename+' WHERE ';
+                    for(var j=0;j<columnsettings.length;j++){
+                        if(copycontent[i][columnsettings[j].column_name]==undefined)
+                            continue;
+                        string+=columnsettings[j].column_name+'=';
+                        if(columnsettings[j].typname=='varchar')
+                            string+="'";
+                        string+=copycontent[i][columnsettings[j].column_name];
+                        if(columnsettings[j].typname=='varchar')
+                            string+="'";
+                        if(j!=columnsettings.length-1){
+                            string+=' AND ';
+                        }
+                    }
+                    string+=';';
+                }
+            }
+            return string;
+        }
+    };
+});
+
 App.factory('getSQLStringFromForm',function(){
     return{
         getInsertString:function(input,table){
@@ -244,11 +314,11 @@ App.factory('getSQLStringFromForm',function(){
             }
             string+=') VALUES(';
             for(var i=0;i<input.length;i++){
-                if(columnsettings[i].typname=='varchar'){
+                if(input[i].type=='varchar'){
                     string+="'";
                 }
                 string+=input[i].value;
-                if(columnsettings[i].typname=='varchar'){
+                if(input[i].type=='varchar'){
                     string+="'";
                 }
                 if(i!=input.length-1){
@@ -1005,12 +1075,14 @@ App.factory('getItemModel',function(){
                                 {
                                     value:null,
                                     description:'Номер аудитории',
-                                    column:'unique_kadastr_num'
+                                    column:'unique_kad_num',
+                                    type:'integer'
                                 },
                                 {
                                     value:null,
                                     description:'Описание',
-                                    column:'opisanie'
+                                    column:'opisanie',
+                                    type:'varchar'
                                 },
                                 {
                                     value:null,
@@ -1019,6 +1091,7 @@ App.factory('getItemModel',function(){
                                     column:'id_type_room',
                                     targettable:'types_rooms',
                                     targetcolumnvalue:'id_tip_room',
+                                    type:'integer',
                                     descriptionvalue:[
                                         'opisanie'
                                     ]
@@ -1030,6 +1103,7 @@ App.factory('getItemModel',function(){
                                     column:'id_sotr',
                                     targettable:'sotrudniki',
                                     targetcolumnvalue:'id_sotrudnika',
+                                    type:'integer',
                                     descriptionvalue:[
                                         'familia',
                                         'imya',
@@ -1050,33 +1124,43 @@ App.factory('getItemModel',function(){
                                     value:null,
                                     description:'Имя',
                                     column:'imya',
-                                    shielding:true
+                                    type:'varchar'
                                 },
                                 {
                                     value:null,
                                     description:'Фамилия',
                                     column:'familia',
-                                    shielding:true
+                                    type:'varchar'
                                 },
                                 {
                                     value:null,
                                     description:'Отчество',
-                                    column:'otchestvo'
+                                    column:'otchestvo',
+                                    type:'varchar'
                                 },
                                 {
                                     value:null,
                                     description:'Серия паспорта',
-                                    column:'pasport_seria'
+                                    column:'pasport_seria',
+                                    type:'integer'
                                 },
                                 {
                                     value:null,
                                     description:'Номер паспорта',
-                                    column:'pasport_nomer'
+                                    column:'pasport_nomer',
+                                    type:'integer'
                                 },
                                 {
                                     value:null,
                                     description:'Контактный телефон',
-                                    column:'kontaktniy_telephone'
+                                    column:'kontaktniy_telephone',
+                                    type:'integer'
+                                },
+                                {
+                                    value:null,
+                                    description:'Адрес',
+                                    column:'origin',
+                                    type:'varchar'
                                 },
                                 {
                                     value:null,
@@ -1085,6 +1169,7 @@ App.factory('getItemModel',function(){
                                     column:'id_otdela',
                                     targettable:'otdely',
                                     targetcolumnvalue:'id_otdela',
+                                    type:'integer',
                                     descriptionvalue:[
                                         'nazvanie'
                                     ]
@@ -1096,6 +1181,7 @@ App.factory('getItemModel',function(){
                                     column:'id_kafedra',
                                     targettable:'kafedry',
                                     targetcolumnvalue:'id_kafedry',
+                                    type:'integer',
                                     descriptionvalue:[
                                         'nazvanie_kafedry'
                                     ]
@@ -1103,6 +1189,217 @@ App.factory('getItemModel',function(){
                             ]
                         }
                     };
+                    break;
+                }
+                case 'computer':{
+                        model={
+                            table:'computers',
+                            input:{
+                                elements:[
+                                    {
+                                        value:null,
+                                        description:'Процессор',
+                                        column:'processor',
+                                        type:'double'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Жесткий диск',
+                                        column:'hdd',
+                                        type:'integer'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Память ГП',
+                                        column:'gpu_memory',
+                                        type:'double'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Память ОП',
+                                        column:'ozu_memory',
+                                        type:'double'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Оборудование',
+                                        index:0,
+                                        column:'id_oborudovaniya',
+                                        targettable:'oborudovanie',
+                                        targetcolumnvalue:'id_oborudovaniya',
+                                        type:'integer',
+                                        descriptionvalue:[
+                                            'description'
+                                        ]
+                                    }
+                                ]
+                            }
+                        };
+                    break;
+                }
+                case 'oborudovanie':{
+                        model={
+                            table:'oborudovanie',
+                            input:{
+                                elements:[
+                                    {
+                                        value:null,
+                                        description:'Описание',
+                                        column:'description',
+                                        type:'varchar'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Комната',
+                                        column:'id_room',
+                                        index:0,
+                                        targettable:'rooms',
+                                        targetcolumnvalue:'id_room',
+                                        type:'integer',
+                                        descriptionvalue:[
+                                            'opisanie'
+                                        ]
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Ответственный сотрудник',
+                                        index:1,
+                                        column:'id_otvetstvennogo',
+                                        targettable:'sotrudniki',
+                                        targetcolumnvalue:'id_sotrudnika',
+                                        type:'integer',
+                                        descriptionvalue:[
+                                            'familia',
+                                            'imya',
+                                            'otchestvo'
+                                        ]
+                                    }
+                                ]
+                            }
+                        };
+                    break;
+                }
+                case 'kafedra':{
+                        model={
+                            table:'kafedry',
+                            input:{
+                                elements:[
+                                    {
+                                        value:null,
+                                        description:'Название кафедры',
+                                        column:'nazvanie_kafedry',
+                                        type:'varchar'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Корпус',
+                                        column:'id_korpusa',
+                                        index:0,
+                                        targettable:'korpusa',
+                                        targetcolumnvalue:'id_korpusa',
+                                        type:'integer',
+                                        descriptionvalue:[
+                                            'nazvanie',
+                                            'adres'
+                                        ]
+                                    }
+                                ]
+                            }
+                        };
+                    break;
+                }
+                case 'institut':{
+                        model={
+                            table:'institutes',
+                            input:{
+                                elements:[
+                                    {
+                                        value:null,
+                                        description:'Название института',
+                                        column:'nazvanie',
+                                        type:'varchar'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Кафедра',
+                                        column:'id_kafedry',
+                                        index:0,
+                                        targettable:'kafedry',
+                                        targetcolumnvalue:'id_kafedry',
+                                        type:'integer',
+                                        descriptionvalue:[
+                                            'nazvanie_kafedry'
+                                        ]
+                                    }
+                                ]
+                            }
+                        };
+                    break;
+                }
+                case 'filial':{
+                        model={
+                            table:'filialy',
+                            input:{
+                                elements:[
+                                    {
+                                        value:null,
+                                        description:'Название филиала',
+                                        column:'nazvanie',
+                                        type:'varchar'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Адрес',
+                                        column:'adres',
+                                        type:'varchar'
+                                    }
+                                ]
+                            }
+                        };
+                    break;
+                }
+                case 'facultet':{
+                        model={
+                            table:'facultets',
+                            input:{
+                                elements:[
+                                    {
+                                        value:null,
+                                        description:'Название факультета',
+                                        column:'nazvanie',
+                                        type:'varchar'
+                                    },
+                                    {
+                                        value:null,
+                                        description:'Кафедра',
+                                        column:'id_kafedry',
+                                        index:0,
+                                        targettable:'kafedry',
+                                        targetcolumnvalue:'id_kafedry',
+                                        type:'integer',
+                                        descriptionvalue:[
+                                            'nazvanie_kafedry'
+                                        ]
+                                    }
+                                ]
+                            }
+                        };
+                    break;
+                }
+                case 'room_type':{
+                        model={
+                            table:'types_rooms',
+                            input:{
+                                elements:[
+                                    {
+                                        value:null,
+                                        description:'Описание типа',
+                                        column:'opisanie',
+                                        type:'varchar'
+                                    }
+                                ]
+                            }
+                        };
                     break;
                 }
             }
