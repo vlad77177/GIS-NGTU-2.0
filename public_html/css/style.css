@@ -107,6 +107,10 @@ body{
     padding: 0.5vw;
     cursor: pointer;
 }
+#menu div:hover{
+    background-color: #009999;
+    color:#ffffff;
+}
 #table-menu,#users-menu,#query-menu{
     position: relative;
     width:20vw;
@@ -124,13 +128,23 @@ body{
     font-size:1.5vw;
     min-height:7vh;
 }
-.table-list-names,.user-list-names,.group-list-names,.query-list-names{
+.left-sidebar-elements{
     font-size: 1.5vw;
     color:#009999;
     margin-left: 2vw;
     cursor: pointer;
     /*border-bottom: 1px solid black;*/
     min-height: 5vh;
+}
+.left-sidebar-elements:hover{
+    background-color: #009999;
+    color:#ffffff;
+}
+.left-sidebar-elements:first-child{
+    margin-top:3px;
+}
+.left-sidebar-elements:last-child{
+    margin-bottom: 3px;
 }
 #tables-content,#users-content,#query-content{
     display:flex;
@@ -299,7 +313,7 @@ table td{
     background-color: #ffff66;
 }
 .btn-yellow{
-    background-color: #ffff00;
+    background-color: #cccc00;
 }
 .btn-red{
     background-color: #ff6666;
@@ -321,4 +335,22 @@ table td{
     height: 2vw;
     margin-left:2vw;
 }
-
+input[type="text"],input[type="password"]{
+   border: 1px solid #666666; 
+   border-radius: 3px; 
+   -webkit-border-radius: 3px; 
+   -moz-border-radius: 3px; 
+   -khtml-border-radius: 3px; 
+   background: #ffffff !important; 
+   outline: none; 
+   height: 24px; 
+   width: 120px; 
+   color: #666666; 
+   font-size: 3vh; 
+   /*font-family: Tahoma; */
+}
+.green-text{
+    color:#009999;
+    font-size:5vh;
+    margin-bottom:1vh;
+}
