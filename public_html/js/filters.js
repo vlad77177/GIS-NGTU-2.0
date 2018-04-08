@@ -240,3 +240,44 @@ App.filter('someRowsSelected',function(){
         return result;
     }
 });
+App.filter('rowFilter',function(){
+    return function(rows,columns,search){
+        if(search==undefined){
+            return rows;
+        }
+        var filtered=[];
+        for(var i=0,f=0;i<rows.length;i++){
+            var rowfind=false;
+            for(var j=0;j<columns.length;j++){
+                var string=rows[i][columns[j].column_name];
+                if(string.includes(search)==true){
+                    rowfind=true;
+                    break;
+                }
+            }
+            if(rowfind==true){
+                filtered[i]=rows[i];
+            }
+        }
+        return filtered
+    };
+});
+App.filter('isRowEmptyFilter',function(){
+    return function(row){
+        if(row==undefined)
+            return true;
+        else{
+            var find_unempty=false;
+            for(var i=0;i<row.length;i++){
+                if(row[i]!=undefined){
+                    find_unempty=true;
+                    console.log(i);
+                    break;
+                }
+            }
+            if(find_unempty==true)
+                return true;
+            else return false;
+        }
+    };
+});

@@ -48,6 +48,7 @@ App.controller('AppController',['$scope',
         $scope.columnprotectionshow=false;
         $scope.newrow=[];
         $scope.selectrow=[];
+        $scope.search=undefined;
                
         $scope.getTableNames=function(){
             $http({method:'POST',data:$scope.user,url:'php/gettablenames.php'})

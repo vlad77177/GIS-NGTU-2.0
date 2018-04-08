@@ -1,8 +1,12 @@
 <div class="table">
+    <div class="search">
+        <input type="text" ng-model="search">
+        <img src="images/seach.png">
+    </div>
     <div ng-show="selectedtablename!=undefined">Таблица: {{selectedtablename}}</div>
-    <table>
+    <table ng-cloak>
         <tr><td ng-repeat="table_column in selectedtablecolumns" ng-bind="table_column.column_name"></td></tr>
-        <tr ng-class="{trselected : selectrow[$index]==true}" ng-init="selectrow[$index]=false" ng-click="selectRow(selectedtablename,$index)" ng-repeat="table_row in selectedtablecontent" ng-repeat="sr in selectrow">
+        <tr ng-show="!(table_row | isRowEmptyFilter)" ng-class="{trselected : selectrow[$index]==true}" ng-init="selectrow[$index]=false" ng-click="selectRow(selectedtablename,$index)" ng-repeat="table_row in (selectedtablecontent | rowFilter:selectedtablecolumns:search)" ng-repeat="sr in selectrow" ng-cloak>
             <td ng-repeat="table_column in selectedtablecolumns">
                 <div class="div-simple" ng-show="!selectrow[$parent.$index]" ng-bind="table_row[table_column.column_name]"></div>
                 <input ng-show="selectrow[$parent.$index]" type="text" ng-model="table_row[table_column.column_name]">

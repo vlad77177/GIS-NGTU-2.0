@@ -165,8 +165,6 @@ body{
     border:none;
 }
 .table{
-    margin-left:1vw;
-    margin-top:2vw;
     width:100%;
     margin-right: 2vw;
 }
@@ -309,5 +307,18 @@ table td{
 .div-simple{
     color:#000000;
     height: auto;
+}
+.search{
+    border-bottom: 2px solid #009999;
+    display:flex;
+    flex-direction:row;
+    align-content: center;
+    margin-bottom: 2vh;
+    padding-bottom: 2vh;
+}
+.search img{
+    width:2vw;
+    height: 2vw;
+    margin-left:2vw;
 }
 
